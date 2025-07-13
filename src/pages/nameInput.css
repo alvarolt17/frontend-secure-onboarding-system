@@ -1,0 +1,18 @@
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+  border-color: #0dcaf0;
+}
+
+.btn-info {
+  background-color: #19e0e0;
+  border-color: #19e0e0;
+}
+
+.btn-info:hover {
+  background-color: #10c7c7;
+  border-color: #10c7c7;
+}
