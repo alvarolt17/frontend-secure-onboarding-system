@@ -70,7 +70,7 @@ export default function PhoneInputPage() {
                     {/* invalid-feedback diletakkan di luar input-group sesuai panduan validasi :contentReference[oaicite:2]{index=2} */}
                     {touched && !isValid && (
                       <div id="phoneFeedback" className="invalid-feedback d-block mt-1">
-                        Nomor harus dimulai bukan 0. Contoh: <code>81234567890</code>
+                        Format no handphone tidak valid
                       </div>
                     )}
                   </Form.Group>
