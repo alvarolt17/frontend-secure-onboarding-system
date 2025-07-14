@@ -4,14 +4,17 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './NameInput.css';
 import logo from '../assets/wondr-logo.png';
 import badgeIcon from '../assets/badge.png'; // ganti dengan gambar yang kamu pakai
+import { useNavigate } from 'react-router-dom';
 
 function NameInputPage() {
   const [name, setName] = useState('');
+  const navigate = useNavigate() ;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Nama disimpan:', name);
-    // Lanjutkan proses berikutnya
+
+    navigate('/phone') ;
   };
 
   return (

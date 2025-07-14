@@ -5,10 +5,12 @@ import './PhoneInput.css';
 import logo from '../assets/wondr-logo.png';
 import phoneIcon from '../assets/phone.png';
 import indonesiaFlag from '../assets/indonesia-flag.png';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function PhoneInputPage() {
   const [phone, setPhone] = useState('');
   const [touched, setTouched] = useState(false);
+  const navigate = useNavigate() ;
 
   const validatePhone = (value) => {
     const num = value.replace(/[\s\-.()]/g, '');
@@ -22,11 +24,16 @@ export default function PhoneInputPage() {
     if (!touched) setTouched(true);
   };
 
+  
+
   const handleSubmit = e => {
     e.preventDefault();
     setTouched(true);
     if (!isValid) return;
     console.log('Nomor HP disimpan:', phone);
+    console.log('nama :', name)
+    navigate('/email') ;
+
     // proses selanjutnya
   };
 

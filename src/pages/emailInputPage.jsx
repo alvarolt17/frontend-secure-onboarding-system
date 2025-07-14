@@ -5,14 +5,17 @@ import './EmailInput.css';
 import logo from '../assets/wondr-logo.png';
 import emailIcon from '../assets/email.png'; // ilustrasi envelope
 import closeIcon from '../assets/close.png'; // ikon ×
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function EmailInputPage() {
   const [email, setEmail] = useState('');
   const maxLen = 50;
+  const navigate = useNavigate() ;
 
   const handleSubmit = e => {
     e.preventDefault();
     console.log('Email disimpan:', email);
+    navigate('/password')
     // lanjut ke proses berikutnya
   };
 

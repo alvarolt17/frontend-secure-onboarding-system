@@ -9,6 +9,7 @@ import {
 import zxcvbn from 'zxcvbn';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Rules.css';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function PasswordForm({ onSubmitEndpoint }) {
   const [password, setPassword] = useState('');
@@ -17,6 +18,7 @@ export default function PasswordForm({ onSubmitEndpoint }) {
   const [strength, setStrength] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
+  const navigate = useNavigate('') ;
 
   const rules = [
     { label: 'Minimal 8 karakter', test: pwd => pwd.length >= 8 },
@@ -60,6 +62,7 @@ export default function PasswordForm({ onSubmitEndpoint }) {
   const handleSubmit = async e => {
     e.preventDefault();
     setMessage(null);
+    navigate('/KTP');
     if (!validateForm()) return;
 
     setSubmitting(true);

@@ -1,0 +1,57 @@
+.landing-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ff8500, #ff8500); /* or solid orange */
+  background-size: cover;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+
+
+
+.content-area {
+  z-index: 1;
+  position: relative;
+}
+
+.btn-download {
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-register {
+  background-color: #fff;
+  color: #ff8500;
+  border-radius: 30px;
+  padding: 0.75rem 2rem;
+}
+
+.hero-tittle {
+  font-size: 8rem;       /* ukuran besar default */
+  line-height: 1.1;      /* agar jarak antar baris mendekat */
+  font-weight: 800; 
+  margin-right: 20vw;     /* lebih tebal untuk efek dramatis */
+}
+
+/* Responsif: pada layar kecil, turunkan ukuran */
+@media (max-width: 768px) {
+  .hero-tittle {
+    font-size: 4rem;
+  }
+}
+
+.hero-tittle2 {
+  font-size: 8rem;       /* ukuran besar default */
+  line-height: 1.1;      /* agar jarak antar baris mendekat */
+  font-weight: 800;      /* lebih tebal untuk efek dramatis */
+  margin-left: 20vw;
+}
+
+/* Responsif: pada layar kecil, turunkan ukuran */
+@media (max-width: 768px) {
+  .hero-tittle2 {
+    font-size: 4rem;
+  }
+}
+
