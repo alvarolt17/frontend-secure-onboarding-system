@@ -31,7 +31,7 @@ export default function EmailInputPage() {
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 rounded-5 shadow bg-white">
-          <Row className="align-items-start">
+          <Row className="align-items-center">
             {/* Ilustrasi */}
             <Col md={6} className="d-none d-md-flex justify-content-center align-items-start">
               <img src={emailIcon} alt="Email Icon" className="img-fluid" style={{ maxWidth: '80%', height: '500px' }} />

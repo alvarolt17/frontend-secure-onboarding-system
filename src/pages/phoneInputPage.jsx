@@ -39,9 +39,9 @@ export default function PhoneInputPage() {
 
   return (
     <div className="vh-100 d-flex flex-column bg-light font-poppins">
-      <div className="p-3">
-        <img src={logo} alt="logo wondr" style={{ width: '130px' }} />
-      </div>
+      <div className="p-3 ps-4">
+              <img src={logo} alt="logo wondr" style={{ width: '130px' }} />
+            </div>
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 rounded-5 shadow bg-white">
           <Row className="align-items-center">

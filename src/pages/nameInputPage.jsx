@@ -20,9 +20,9 @@ function NameInputPage() {
   return (
     <div className="vh-100 d-flex flex-column bg-light">
       {/* Logo at the top-left */}
-      <div className="p-3">
-        <img src={logo} alt="logo wondr" style={{ width: '130px' }} />
-      </div>
+      <div className="p-3 ps-4">
+              <img src={logo} alt="logo wondr" style={{ width: '130px' }} />
+            </div>
 
       {/* Main content */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
