@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './NameInput.css';
 import logo from '../assets/wondr-logo.png';
-import badgeIcon from '../assets/badge.png'; // ganti dengan gambar yang kamu pakai
+import badgeIcon from '../assets/Nama-badge.png'; // ganti dengan gambar yang kamu pakai
 import { useNavigate } from 'react-router-dom';
 
 function NameInputPage() {
@@ -27,7 +27,7 @@ function NameInputPage() {
       {/* Main content */}
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 rounded-5 shadow bg-white">
-          <Row className="align-items-start">
+          <Row className="align-items-center">
             {/* Left - Image */}
             <Col
               md={6}

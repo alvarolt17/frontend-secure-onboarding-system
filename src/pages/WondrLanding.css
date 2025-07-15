@@ -1,0 +1,42 @@
+.wondr-landing {
+  background-color: #fffef5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.wondr-header {
+  background-color: transparent;
+}
+
+.wondr-logo {
+  width: 140px;
+}
+
+.wondr-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.wondr-subtitle {
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  max-width: 600px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.wondr-login-button {
+  border-radius: 30px;
+  background-color: #2ce3dc;
+  border: none;
+  color: #000;
+  width: 180px;
+}
+
+.wondr-globe-wrapper {
+  padding-bottom: 2rem;
+}
+
+.wondr-globe {
+  max-width: 800px;
+  width: 90%;
+}

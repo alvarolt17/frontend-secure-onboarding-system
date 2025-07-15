@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './EKTPVerification.css';
 import logo from '../assets/wondr-logo.png';
-import ktpIcon from '../assets/ktp-icon.png';
+import ktpIcon from '../assets/KTP.png';
 import closeIcon from '../assets/close.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -29,6 +29,7 @@ export default function EKTPVerificationPage() {
       setError('');
       setSuccess('');
       setKtpData(null);
+      navigate('/tabungan')
       
       try {
         console.log('🚀 Sending request to API...');
@@ -63,7 +64,7 @@ export default function EKTPVerificationPage() {
             setSuccess('✅ NIK valid! Data KTP ditemukan dan cocok.');
             setKtpData(result.data);
             console.log('✅ KTP Data:', result.data);
-            navigate('/KTP')
+            
             
             // TODO: navigate ke halaman berikutnya
             // setTimeout(() => {
@@ -95,40 +96,40 @@ export default function EKTPVerificationPage() {
   };
 
   // Quick fill untuk testing
-  const fillTestData = (nikValue, namaValue) => {
-    setNik(nikValue);
-    setNamaLengkap(namaValue);
-    setError('');
-    setSuccess('');
-    setKtpData(null);
-  };
+  // const fillTestData = (nikValue, namaValue) => {
+  //   setNik(nikValue);
+  //   setNamaLengkap(namaValue);
+  //   setError('');
+  //   setSuccess('');
+  //   setKtpData(null);
+  // };
 
-  // Test API connection
-  const testConnection = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        'https://rank-aspect-strange-navigator.trycloudflare.com/api/verification/health',
-        {
-          method: 'GET',
-          credentials: 'include'
-        }
-      );
+  // // Test API connection
+  // const testConnection = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(
+  //       'https://rank-aspect-strange-navigator.trycloudflare.com/api/verification/health',
+  //       {
+  //         method: 'GET',
+  //         credentials: 'include'
+  //       }
+  //     );
       
-      if (response.ok) {
-        const result = await response.json();
-        setSuccess('✅ Koneksi ke API berhasil!');
-        console.log('API Health:', result);
-      } else {
-        setError('❌ API tidak merespons dengan baik');
-      }
-    } catch (err) {
-      setError('❌ Gagal terhubung ke API');
-      console.error('Connection test failed:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       setSuccess('✅ Koneksi ke API berhasil!');
+  //       console.log('API Health:', result);
+  //     } else {
+  //       setError('❌ API tidak merespons dengan baik');
+  //     }
+  //   } catch (err) {
+  //     setError('❌ Gagal terhubung ke API');
+  //     console.error('Connection test failed:', err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="vh-100 d-flex flex-column bg-light font-poppins">
@@ -151,32 +152,6 @@ export default function EKTPVerificationPage() {
                 <h2 className="mb-3 fw-bold text-dark">Verifikasi e‑KTP</h2>
                 <p className="text-muted mb-4">Biar kita lebih kenal, fotoin e‑KTP kamu ya!</p>
                 
-                {/* Test Connection Button */}
-                <div className="mb-3">
-                  <button 
-                    type="button" 
-                    className="btn btn-sm btn-outline-info"
-                    onClick={testConnection}
-                    disabled={loading}
-                  >
-                    🔗 Test Connection
-                  </button>
-                </div>
-                
-                {/* Success Message */}
-                {success && (
-                  <div className="alert alert-success mb-3" role="alert">
-                    {success}
-                  </div>
-                )}
-                
-                {/* Error Message */}
-                {error && (
-                  <div className="alert alert-danger mb-3" role="alert">
-                    {error}
-                  </div>
-                )}
-                
                 {/* KTP Data Display */}
                 {ktpData && (
                   <div className="alert alert-info mb-3">
@@ -194,26 +169,31 @@ export default function EKTPVerificationPage() {
                 <Form onSubmit={handleSubmit}>
                   {/* NIK */}
                   <Form.Group controlId="nik" className="mb-3">
-                    <Form.Label className="fw-semibold">NIK</Form.Label>
-                    <div className="position-relative">
-                      <Form.Control
-                        type="text"
-                        placeholder="3175031234567890"
-                        value={nik}
-                        onChange={e => e.target.value.length <= maxNik && setNik(e.target.value)}
-                        maxLength={maxNik}
-                        className="border-dashed rounded-pill ps-4 pe-5 py-2"
-                        isInvalid={nik.length > 0 && !isNikValid}
-                        disabled={loading}
-                      />
-                      <div className="text-end small text-muted mt-1">
-                        {nik.length}/{maxNik}
-                      </div>
-                    </div>
-                    <Form.Text className="text-muted">
-                      Gunakan NIK yang terdaftar di database KTP Dukcapil
-                    </Form.Text>
-                  </Form.Group>
+  <Form.Label className="fw-semibold">NIK</Form.Label>
+  <div className="position-relative">
+    <Form.Control
+      type="text"
+      placeholder="4501021109000005"
+      value={nik}
+      onChange={e => e.target.value.length <= maxNik && setNik(e.target.value)}
+      maxLength={maxNik}
+      className="border-dashed rounded-pill ps-4 pe-5 py-2"
+      isInvalid={nik.length > 0 && !isNikValid}
+    />
+  </div>
+
+  {/* Wrapper untuk counter & hint text */}
+  <div className="d-flex justify-content-between align-items-center mt-1">
+    
+    <Form.Text className="text-muted small mb-0">
+      Gunakan NIK yang terdaftar di database KTP Dukcapil
+    </Form.Text>
+    <div className="small text-muted">
+      {nik.length}/{maxNik}
+    </div>
+  </div>
+</Form.Group>
+
 
                   {/* Nama Lengkap */}
                   <Form.Group controlId="namaLengkap" className="mb-3">
@@ -244,38 +224,7 @@ export default function EKTPVerificationPage() {
                     </Form.Text>
                   </Form.Group>
 
-                  {/* Quick Test Buttons */}
-                  <div className="mb-3 p-3 bg-light rounded">
-                    <small className="text-muted d-block mb-2">
-                      <strong>🧪 Quick Test (klik untuk auto-fill):</strong>
-                    </small>
-                    <div className="d-flex flex-wrap gap-2">
-                      <button 
-                        type="button" 
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => fillTestData('3175031234567890', 'John Doe')}
-                        disabled={loading}
-                      >
-                        👨 John Doe
-                      </button>
-                      <button 
-                        type="button" 
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => fillTestData('3175032345678901', 'Jane Smith')}
-                        disabled={loading}
-                      >
-                        👩 Jane Smith
-                      </button>
-                      <button 
-                        type="button" 
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => fillTestData('3175033456789012', 'Ahmad Rahman')}
-                        disabled={loading}
-                      >
-                        👨 Ahmad Rahman
-                      </button>
-                    </div>
-                  </div>
+                  
 
                   {/* Tips */}
                   <div className="ps-3 mb-4">

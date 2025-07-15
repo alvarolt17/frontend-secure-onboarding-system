@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './PhoneInput.css';
 import logo from '../assets/wondr-logo.png';
-import phoneIcon from '../assets/phone.png';
-import indonesiaFlag from '../assets/indonesia-flag.png';
+import phoneIcon from '../assets/handphone.png';
+import indonesiaFlag from '../assets/flag.png';
 import { Navigate, useNavigate } from 'react-router-dom';
 
 export default function PhoneInputPage() {
@@ -44,7 +44,7 @@ export default function PhoneInputPage() {
       </div>
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 rounded-5 shadow bg-white">
-          <Row className="align-items-start">
+          <Row className="align-items-center">
             <Col md={6} className="d-none d-md-flex justify-content-center align-items-center">
               <img src={phoneIcon} alt="Phone Icon" className="img-fluid" style={{ maxWidth: '80%', height: '500px' }} />
             </Col>

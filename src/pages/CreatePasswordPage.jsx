@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../assets/wondr-logo.png';
 import './CreatePassword.css';
 import { Container, Row, Col } from 'react-bootstrap';
-import passIcon from '../assets/passIcon.png';
+import passIcon from '../assets/Password.png';
 
 function CreatePasswordPage() {
   return (
