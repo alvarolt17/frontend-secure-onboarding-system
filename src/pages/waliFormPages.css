@@ -1,0 +1,22 @@
+.wali-form-page .form-control {
+  border: 2px solid #25c9d0;
+  border-radius: 10px;
+  padding: 10px 40px 10px 15px;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+}
