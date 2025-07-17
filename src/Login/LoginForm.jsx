@@ -1,0 +1,119 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; 
+import styles from './LoginForm.module.css';
+import wondr from '../assets/wondr-logo.png';
+import logo from '../assets/login-image.png';
+
+export default function LoginForm() {
+
+    const [loginData, setLoginData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const [submitting, setSubmitting] = useState(false);
+    const [serverError, setServerError] = useState('');
+    
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLoginData({
+            ...loginData,
+            [name]: value,
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setServerError('');
+        setSubmitting(true);
+
+        try {
+            // Updated API endpoint untuk Cloudflare backend
+            const response = await axios.post('https://fight-hawk-dom-editions.trycloudflare.com/api/auth/login', {
+                email: loginData.email,
+                password: loginData.password,
+            }, {
+                withCredentials: true  // Important untuk cookie-based auth
+            });
+
+            // Backend menggunakan cookie, tapi response tetap ada message dan customer data
+            console.log('Login response:', response.data);
+            
+            // Navigate ke dashboard setelah login berhasil
+            navigate('/dashboard'); 
+
+        } catch (error) {
+            if (error.response && error.response.data) {
+                // Backend mengembalikan error dalam format { error: "message" }
+                setServerError(error.response.data.error || 'Login gagal');
+            } else {
+                setServerError('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <div className={styles['container']}>
+            <header className={styles.header}>
+                <div className={styles.headerLeft}>
+                    <img src={wondr} alt="Wondr Logo" className={styles.headerIcon} />
+                </div>
+            </header>
+
+            <div className={styles['panel-container']}>
+                <div className={styles['left-panel']}>
+                    <div className={styles['left-panel-content']}>
+                        <img src={logo} alt="Wondr Logo" className={styles['left-panel-image']} />
+                    </div>
+                </div>
+
+                <div className={styles['right-panel']}>
+                    <div className={styles['login-form-header']}>
+                        <h2 className={styles['login-form-title']}>Login</h2>
+                        <p>Pastikan email dan password kamu benar ya!</p>
+                    </div>
+
+                    {serverError && <p className={styles['error-message']}>{serverError}</p>}
+
+                    <form className={styles['login-form']} onSubmit={handleSubmit}>
+                        <div className={styles['input-group']}>
+                            <label htmlFor="email" className={styles['input-label']}>Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                value={loginData.email} 
+                                onChange={handleChange} 
+                                className={styles['input-field']} 
+                                placeholder="Enter your email" 
+                                required 
+                            />
+                        </div>
+                        <div className={styles['input-group']}>
+                            <label htmlFor="password" className={styles['input-label']}>Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                value={loginData.password} 
+                                onChange={handleChange} 
+                                className={styles['input-field']} 
+                                placeholder="Enter your password" 
+                                required 
+                            />
+                        </div>
+                        
+                        <button type="submit" className={styles['submit-button']} disabled={submitting}>
+                            {submitting ? 'Loading...' : 'Login'}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}

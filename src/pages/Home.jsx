@@ -39,7 +39,7 @@ export default function Home() {
             <Nav.Link className="text-white" href="#products" onClick={() => setExpanded(false)}>Product &amp; Services</Nav.Link>
             <Nav.Link className="text-white" href="#info" onClick={() => setExpanded(false)}>Information</Nav.Link>
             <Nav.Link className="text-white" href="#faq" onClick={() => setExpanded(false)}>FAQ</Nav.Link>
-            <Nav.Link className="text-white" href="#" onClick={() => setExpanded(false)}>Login</Nav.Link>
+            <Nav.Link className="text-white" href="/login" onClick={() => setExpanded(false)}>Login</Nav.Link>
             <Nav.Link className="text-white" href="/terms" onClick={() => setExpanded(false)}>SignUp</Nav.Link>
           </Nav>
         </Navbar.Collapse>

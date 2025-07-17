@@ -9,6 +9,8 @@ import { Routes, Route } from "react-router-dom"
 import TermsCondition from "./pages/termsCondition"
 import Undang from "./pages/undang"
 import WondrLanding from "./pages/WondrLanding"
+import LoginForm from "./Login/LoginForm"
+import Dashboard from "./Dashboard/Dashboard"
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
       <Route path="/terms" element ={<TermsCondition/>}/>
       <Route path="/undang" element={<Undang/>} />
       <Route path="/wondrLanding" element={<WondrLanding/>} />
+      <Route path="/login" element={<LoginForm/>} />
+      <Route path="/dashboard" element={<Dashboard/>} />
+      
     </Routes>
   )
 }

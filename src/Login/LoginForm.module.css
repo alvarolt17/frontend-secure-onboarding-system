@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+.font-poppins { font-family: 'Poppins', sans-serif; }
+
+/* HEADER */
+.header {
+    background-color: #fff;
+    padding: 10px 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-bottom: 2px solid #eaeaea;
+}
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
+.headerIcon {
+    max-height: 40px;
+}
+  
+
+.container{
+    height: 100vh;
+    width: 100wh;
+}
+
+.panel-container{
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    flex-grow: 1;
+    padding: 40px;
+    align-items: stretch;
+}
+
+/* LEFT PANEL */
+.left-panel{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.left-panel-image{
+    max-height: 450px;
+    width: auto;
+}
+
+
+/* RIGHT PANEL */
+.right-panel{
+    height: 100%;
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+
+.login-form{
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+}
+.login-form-header{
+    text-align: center;
+}
+.login-form-header h2 {
+    font-weight: 550;
+    color: #262626;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+.login-form-header p {
+    color: #8c8c8c;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.submit-button {
+    padding: 8px 0;
+    border-radius: 30px;
+    background-color: #2ce3dc;
+    border: none;
+    color: white;
+    width: 180px;
+    margin-top: 10px;
+  }
+
+
+/* Tambahkan grup gaya baru ini */
+.input-group {
+    width: 100%; /* Pastikan grup input mengambil lebar penuh dari form */
+    margin-bottom: 20px; /* Beri jarak antar input field */
+    position: relative;
+}
+  
+.input-label {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 8px;
+    display: block; /* Pastikan label berada di barisnya sendiri */
+}
+  
+.input-field {
+    width: 100%;
+    padding: 12px 15\px; /* Beri padding agar lebih lega */
+    border-radius: 8px; /* Sudut lebih tumpul */
+    border: 1px solid #ddd; /* Border yang lebih soft */
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Animasi transisi */
+}
+  
+  /* Efek saat input field di-klik (fokus) */
+.input-field:focus {
+    outline: none; /* Hilangkan outline default */
+    border-color: #2ce3dc; /* Ubah warna border saat aktif */
+    box-shadow: 0 0 0 3px rgba(44, 227, 220, 0.2); /* Tambahkan efek glow */
+}
