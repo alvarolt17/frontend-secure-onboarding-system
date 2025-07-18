@@ -1,24 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-.font-poppins { font-family: 'Poppins', sans-serif; }
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
 
 .border-dashed {
-  border: 2px dashed #19e0e0 !important;
+  border: 2px dashed #3FD8D4 !important;
 }
 
 .btn-clear {
   position: absolute;
   top: 50%;
-  right: 1rem;
+  right: 0.75rem;
   width: 20px;
   height: 20px;
   transform: translateY(-50%);
+  border: none;
+  background: #757575;
+  color: white;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.7;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-clear:hover {
+  opacity: 1;
+}
+
+.btn-wondr {
+  background-color: #FF8500;
+  border-color: #FF8500;
+}
+
+.btn-wondr:disabled {
+  opacity: 0.6;
+}
+
+.btn-wondr:not(:disabled):hover {
+  background-color: #e07500;
 }
 
 .tips-list {
   list-style: disc;
-  margin: 0.5rem 0;
-  padding-left: 1.2rem;
+  margin: 0.5rem 0 0 1.2rem;
   font-size: 0.9rem;
 }

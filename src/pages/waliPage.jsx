@@ -1,0 +1,83 @@
+import React, { useState } from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useFormData } from '../context/formContext';    // ✅
+import { useNavigate } from 'react-router-dom';           // ✅
+import logo from '../assets/wondr-logo.png';
+import guardianImg from '../assets/wali.png';
+
+const guardianOptions = ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Bibi', 'Paman','Kakek', 'Nenek'];
+
+export default function WaliPage() {
+  const [selectedGuardian, setSelectedGuardian] = useState('');
+  const { updateForm } = useFormData();       // ✅
+  const navigate = useNavigate();            // ✅
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedGuardian) return;
+
+    updateForm({ jenisWali: selectedGuardian });   // ✍️ Simpan ke context
+    console.log('Wali yang dipilih:', selectedGuardian);
+    navigate('/identitasWali');                    // ➡️ Navigasi
+  };
+
+  return (
+    <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
+      <div className="p-3 ps-4">
+        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
+      </div>
+      <div className="flex-grow-1 d-flex align-items-center justify-content-center">
+        <Container className="p-4 bg-white rounded-4 shadow" style={{ maxWidth: '1200px', width: '95vw' }}>
+          <Row className="align-items-center">
+            <Col md={6}>
+              <h2 className="fw-bold mb-2">Siapa wali kamu?</h2>
+              <p className="text-muted mb-4">Wali adalah orang yang bertanggung jawab atas diri kamu.</p>
+
+              {guardianOptions.map((option, idx) => {
+                const isSelected = selectedGuardian === option;
+                return (
+                  <Button
+                    key={idx}
+                    onClick={() => setSelectedGuardian(option)}
+                    className="mb-3 w-100 text-start rounded-3"
+                    style={{
+                      border: '2px solid #FFA500',
+                      backgroundColor: isSelected ? '#FFA500' : 'transparent',
+                      color: isSelected ? 'white' : '#333',
+                      fontWeight: isSelected ? '700' : '600',
+                    }}
+                    variant="link"
+                    size="lg"
+                  >
+                    {option}
+                  </Button>
+                );
+              })}
+
+              <div className="text-center mt-3">
+                <Button
+                  onClick={handleSubmit}
+                  className="fw-bold rounded-pill px-5 py-2"
+                  style={{ backgroundColor: '#2ce3dc', border: 'none', color: '#000' }}
+                  disabled={!selectedGuardian}
+                >
+                  Lanjutkan
+                </Button>
+              </div>
+            </Col>
+
+            <Col md={6} className="d-none d-md-flex justify-content-end">
+              <img
+                src={guardianImg}
+                alt="Guardian Illustration"
+                className="img-fluid"
+                style={{ maxHeight: '500px', objectFit: 'contain' }}
+              />
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </div>
+  );
+}

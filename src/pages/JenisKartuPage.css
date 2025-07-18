@@ -1,0 +1,116 @@
+.jenis-kartu-page {
+  background-image: url('../assets/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding-bottom: 60px; /* memastikan background sampai bawah tombol slider */
+}
+
+.logo-img {
+  width: 130px;
+}
+
+.card-slider-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.card-slider {
+  width: 100%;
+  max-width: 900px;
+}
+
+.slick-slide > div {
+  display: flex;
+  justify-content: center;
+}
+
+.card-item {
+  background-color: #ffffff;
+  padding: 24px;
+  border-radius: 30px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.card-img {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px auto;
+}
+
+.card-info-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.info-item {
+  font-size: 0.95rem;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-label {
+  color: #333;
+  font-weight: 500;
+  text-align: left;
+}
+
+.info-value {
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.btn-warning {
+  background-color: #ffbe00;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.btn-warning:hover {
+  background-color: #ffaa00;
+}
+
+@media (max-width: 768px) {
+  .card-img {
+    width: 140px;
+  }
+  .card-title {
+    font-size: 1.2rem;
+  }
+  .info-item {
+    font-size: 0.85rem;
+    padding: 5px 0;
+  }
+  .btn-warning {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}
