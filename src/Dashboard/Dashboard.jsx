@@ -159,7 +159,8 @@ const Dashboard = () => {
     const handleLogout = () => {
         localStorage.removeItem('token'); // Hapus token dari localStorage
         console.log('Token JWT berhasil dihapus dari localStorage. Mengarahkan ke halaman login.');
-        navigate('/login'); // Arahkan pengguna ke halaman login
+        // navigate('/login'); // Arahkan pengguna ke halaman login
+        navigate('/'); // Arahkan pengguna ke halaman awal
     };
 
     // Efek untuk memeriksa token saat komponen dimuat

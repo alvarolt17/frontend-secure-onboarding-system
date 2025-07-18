@@ -28,6 +28,12 @@ import AccountConfirmation from './pages/AccountConfirmation';
 
 import WaliIdentityPage from './pages/waliIdentityPage';
 
+// loginForm
+import LoginForm from './Login/LoginForm';
+
+// Dashboard
+import Dashboard from './Dashboard/Dashboard';
+
 function App() {
   return (
     <FormProvider>
@@ -53,6 +59,8 @@ function App() {
         <Route path="/jenisKartuPage" element={<JenisKartuPage />} />
         <Route path="/IdentitasWali" element={<WaliIdentityPage/>} />
         <Route path="/summary" element={<AccountConfirmation/>} />
+        <Route path="/login" element={<LoginForm />} /> {/* Pastikan baris ini ada! */}
+        <Route path="/dashboard" element={<Dashboard />} /> {/* Pastikan baris ini ada! */}
       </Routes>
     </FormProvider>
   );
