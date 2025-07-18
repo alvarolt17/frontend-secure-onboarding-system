@@ -34,6 +34,7 @@ const Dashboard = () => {
                                 <Nav.Link href="#products" className="text-white" onClick={() => setExpanded(false)}>Product & Services</Nav.Link>
                                 <Nav.Link href="#info" className="text-white" onClick={() => setExpanded(false)}>Information</Nav.Link>
                                 <Nav.Link href="#faq" className="text-white" onClick={() => setExpanded(false)}>FAQ</Nav.Link>
+                                <Nav.Link href="#faq" className="text-white" onClick={() => setExpanded(false)}>Log out</Nav.Link>
                             </Nav>
                             <Nav>
                                 <div className={styles.profileContainer}>
