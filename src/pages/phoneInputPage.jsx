@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import './PhoneInput.css';
+import './phoneInputPage.css';
 import logo from '../assets/wondr-logo.png';
 import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
