@@ -42,7 +42,8 @@ export default function EKTPVerificationPage() {
     setLoading(true);
     try {
       const resp = await fetch(
-        'https://christina-carlos-logical-cart.trycloudflare.com/api/dukcapil/verify-nik',
+        // 'https://christina-carlos-logical-cart.trycloudflare.com/api/dukcapil/verify-nik',
+        'http://localhost:8081/api/dukcapil/verify-nik',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
