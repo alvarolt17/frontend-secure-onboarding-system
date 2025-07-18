@@ -48,7 +48,7 @@ export default function JenisTabunganPage() {
   ];
 
   const handleChoose = (title) => {
-    updateForm({ tipeTabungan: title });
+    updateForm({ tipeAkun: title });
     console.log('✅ Pilihan tipeTabungan disimpan:', title);
     navigate('/JenisKartuPage');
   };

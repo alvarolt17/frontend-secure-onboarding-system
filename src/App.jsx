@@ -6,9 +6,9 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 import Home from "./pages/Home";
-import NameInputPage from "./pages/NameInputPage";
-import PhoneInputPage from "./pages/PhoneInputPage";
-import EmailInputPage from "./pages/EmailInputPage";
+import NameInputPage from "./pages/nameInputPage";
+import PhoneInputPage from "./pages/phoneInputPage";
+import EmailInputPage from "./pages/emailInputPage";
 import CreatePasswordPage from "./pages/CreatePasswordPage";
 import EKTPVerificationPage from "./pages/EKTPVerificationPage";
 import JenisTabunganPage from "./pages/JenisTabunganPage";
@@ -22,8 +22,10 @@ import OccupationPage from "./pages/OccupationPage";
 import WaliPage from "./pages/WaliPage";
 import PenghasilanPage from "./pages/PenghasilanPage";
 import JumlahGaji from "./pages/JumlahGaji";
-import TujuanPembukaanRekening from "./pages/TujuanPembukaanRekening";
+import TujuanPembukaanRekening from "./pages/tujuanPembukaanRekening";
 import JenisKartuPage from "./pages/JenisKartuPage";
+import AccountConfirmation from './pages/AccountConfirmation';
+
 import WaliIdentityPage from './pages/waliIdentityPage';
 
 function App() {
@@ -50,6 +52,7 @@ function App() {
         <Route path="/tujuanPembukaanRekening" element={<TujuanPembukaanRekening />} />
         <Route path="/jenisKartuPage" element={<JenisKartuPage />} />
         <Route path="/IdentitasWali" element={<WaliIdentityPage/>} />
+        <Route path="/summary" element={<AccountConfirmation/>} />
       </Routes>
     </FormProvider>
   );

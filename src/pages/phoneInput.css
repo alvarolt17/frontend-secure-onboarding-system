@@ -4,24 +4,35 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.input-group {
+.input-group,
+.input-group-focus {
   border: 1px solid #ddd;
   border-radius: 50px;
 }
 
 .input-group:focus-within {
-  border-color: #0dcaf0;
-  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+  border-color: #3FD8D4; /* BNI teal */
+  box-shadow: 0 0 0 0.2rem rgba(63, 216, 212, 0.3);
 }
 
-input.is-invalid {
-  border-color: #dc3545;
-}
-
-input.is-valid {
+.is-valid input {
   border-color: #28a745;
 }
 
-.invalid-feedback {
-  margin-left: 1rem;
+.is-invalid input {
+  border-color: #dc3545;
+}
+
+.btn-wondr {
+  background-color: #FF8500; /* Wondr orange */
+  border: none;
+  color: white;
+}
+
+.btn-wondr:disabled {
+  opacity: 0.6;
+}
+
+.btn-wondr:not(:disabled):hover {
+  background-color: #e17a00;
 }

@@ -2,17 +2,54 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-.form-control:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
-  border-color: #0dcaf0;
+.border-bni-teal {
+  border: 2px solid #3FD8D4 !important;
 }
 
-.btn-info {
-  background-color: #19e0e0;
-  border-color: #19e0e0;
+.btn-wondr {
+  background-color: #FF8500;
+  border-color: #FF8500;
+  color: white;
+  padding: 0.5rem 2rem;
+  border-radius: 50px;
+  font-weight: bold;
 }
 
-.btn-info:hover {
-  background-color: #10c7c7;
-  border-color: #10c7c7;
+.btn-wondr:hover {
+  background-color: #e07505;
+  border-color: #e07505;
+}
+
+.btn-bni-clear {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-clear {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #757575;
+  color: white;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-clear:hover {
+  background: #5e5e5e;
+}
+
+.btn-clear:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 133, 0, 0.5);
 }

@@ -1,11 +1,5 @@
-// src/components/PasswordForm.jsx
-
 import React, { useState } from 'react';
-import {
-  Form,
-  Button,
-  ProgressBar,
-} from 'react-bootstrap';
+import { Form, Button, ProgressBar } from 'react-bootstrap';
 import zxcvbn from 'zxcvbn';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
@@ -21,10 +15,10 @@ export default function PasswordForm() {
 
   const rules = [
     { label: 'Minimal 8 karakter', test: pwd => pwd.length >= 8 },
-    { label: 'Mengandung huruf besar', test: pwd => /[A-Z]/.test(pwd) },
-    { label: 'Mengandung huruf kecil', test: pwd => /[a-z]/.test(pwd) },
-    { label: 'Mengandung angka', test: pwd => /\d/.test(pwd) },
-    { label: 'Mengandung karakter spesial', test: pwd => /[^A-Za-z0-9]/.test(pwd) },
+    { label: 'Huruf besar (A–Z)', test: pwd => /[A-Z]/.test(pwd) },
+    { label: 'Huruf kecil (a–z)', test: pwd => /[a-z]/.test(pwd) },
+    { label: 'Angka (0–9)', test: pwd => /\d/.test(pwd) },
+    { label: 'Karakter spesial', test: pwd => /[^A-Za-z0-9]/.test(pwd) },
   ];
 
   const handlePasswordChange = e => {
@@ -56,19 +50,18 @@ export default function PasswordForm() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // Simpan password ke context
     updateForm({ password });
-
-    // Lanjut ke next page
     navigate('/ktp');
   };
 
-  const variant = ['danger','danger','warning','info','success'][strength];
-  const label   = ['Lemah','Lemah','Sedang','Kuat','Sangat Kuat'][strength];
-  const percent = (strength/4)*100;
+  const variants = [ 'danger', 'danger', 'warning', 'info', 'success' ];
+  const labels   = [ 'Lemah', 'Lemah', 'Sedang', 'Kuat', 'Sangat Kuat' ];
+  const variant  = variants[strength];
+  const label    = labels[strength];
+  const percent  = (strength / 4) * 100;
 
   return (
-    <Form noValidate onSubmit={handleSubmit} autoComplete="off">
+    <Form noValidate onSubmit={handleSubmit} autoComplete="new-password">
       <Form.Group controlId="password">
         <Form.Label>Password</Form.Label>
         <Form.Control
@@ -77,9 +70,12 @@ export default function PasswordForm() {
           value={password}
           onChange={handlePasswordChange}
           isInvalid={!!errors.password}
+          className="border-brand"
         />
         <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
-        <ProgressBar now={percent} variant={variant} label={label} className="mt-2"/>
+
+        <ProgressBar now={percent} variant={variant} label={label} className="mt-2 border-brand" />
+
         <div className="mt-3">
           {rules.map((rule, i) => {
             const passed = rule.test(password);
@@ -87,11 +83,9 @@ export default function PasswordForm() {
               <div key={i} className="d-flex align-items-center mb-2">
                 <div
                   className={`me-2 rounded-circle ${passed ? 'bg-success' : 'bg-secondary'}`}
-                  style={{ width:12, height:12 }}
+                  style={{ width: 12, height: 12 }}
                 />
-                <small className={passed ? 'text-success' : 'text-muted'}>
-                  {rule.label}
-                </small>
+                <small className={passed ? 'text-success' : 'text-muted'}>{rule.label}</small>
               </div>
             );
           })}
@@ -106,12 +100,13 @@ export default function PasswordForm() {
           value={confirm}
           onChange={handleConfirmChange}
           isInvalid={!!errors.confirm}
+          className="border-brand"
         />
         <Form.Control.Feedback type="invalid">{errors.confirm}</Form.Control.Feedback>
       </Form.Group>
 
       <div className="d-flex justify-content-center">
-        <Button type="submit" variant="primary" className="mt-4 px-4">
+        <Button type="submit" className="btn-wondr mt-4 px-4">
           Lanjutkan
         </Button>
       </div>
