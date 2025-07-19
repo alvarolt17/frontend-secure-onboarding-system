@@ -7,7 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 import Home from "./pages/Home";
 import NameInputPage from "./pages/nameInputPage";
-import PhoneInputPage from "./pages/phoneInputPage";
+import PhoneInputPage from "./pages/PhoneInputPage";
 import EmailInputPage from "./pages/emailInputPage";
 import CreatePasswordPage from "./pages/CreatePasswordPage";
 import EKTPVerificationPage from "./pages/EKTPVerificationPage";
