@@ -152,7 +152,7 @@ export default function LoginForm() {
 
         try {
             // Endpoint API yang diperbarui untuk Cloudflare backend
-            const response = await axios.post('http://localhost:8083/api/auth/login', {
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
                 email: loginData.email,
                 password: loginData.password,
             }, {
