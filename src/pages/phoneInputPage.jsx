@@ -7,6 +7,7 @@ import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 export default function PhoneInputPage() {
   const [phone, setPhone] = useState('');
@@ -55,6 +56,7 @@ export default function PhoneInputPage() {
             <Col md={6}>
               <h2 className="mb-3 fw-bold">Isi Nomor HP Kamu</h2>
               <p className="text-muted mb-4">Jangan lupa gunakan nomor aktif ya!</p>
+              
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Group controlId="phone">
                   <Form.Label className="fw-semibold">Nomor HP</Form.Label>

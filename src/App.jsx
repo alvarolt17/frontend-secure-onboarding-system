@@ -8,6 +8,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import Home from "./pages/Home";
 import NameInputPage from "./pages/nameInputPage";
 import PhoneInputPage from "./pages/phoneInputPage";
+import PhoneOtpInputPage from './pages/phoneOtpInputPage';
 import EmailInputPage from "./pages/emailInputPage";
 import CreatePasswordPage from "./pages/CreatePasswordPage";
 import EKTPVerificationPage from "./pages/EKTPVerificationPage";
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/name" element={<NameInputPage />} />
         <Route path="/phone" element={<PhoneInputPage />} />
+        <Route path="/phoneOtp" element={<PhoneOtpInputPage />} />
         <Route path="/email" element={<EmailInputPage />} />
         <Route path="/password" element={<CreatePasswordPage />} />
         <Route path="/ktp" element={<EKTPVerificationPage />} />
