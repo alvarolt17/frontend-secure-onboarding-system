@@ -1,96 +1,185 @@
-import React, { useState } from 'react';
+// src/pages/AddressInputPage.jsx
+import React, { useState, useMemo } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './address.css';
 import logo from '../assets/wondr-logo.png';
 import addressImg from '../assets/addressicon.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
 
+// 🔐 Sanitasi: trim, remove kontrol & tanda berbahaya
+function sanitizeField(str) {
+  return str
+    .trim()
+    .replace(/[\x00-\x1F\x7F]/g, '')           // hapus karakter kontrol
+    .replace(/['";\\/]/g, '');                // buang karakter potensial injeksi
+}
+
+// ✅ Validasi: whitelist huruf, angka, spasi & teks unicode umum
+function validateField(str) {
+  return /^[A-Za-z0-9À-ÖØ-öø-ÿ\s\-,.]{1,100}$/.test(str);
+}
+
 export default function AddressInputPage() {
-  const [formData, setFormData] = useState({
+  const [data, setData] = useState({
     address: '', province: '', city: '',
     district: '', subDistrict: '', postalCode: '',
   });
+  const [errors, setErrors] = useState({});
   const { updateForm } = useFormData();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const inputs = useMemo(() => [
+    { label: 'Alamat Kamu', name: 'address', placeholder: 'Masukkan alamat lengkap' },
+    { label: 'Provinsi', name: 'province', placeholder: 'Masukkan provinsi' },
+    { label: 'Kabupaten/Kota', name: 'city', placeholder: 'Masukkan kota' },
+    { label: 'Kecamatan', name: 'district', placeholder: 'Masukkan kecamatan' },
+    { label: 'Kelurahan', name: 'subDistrict', placeholder: 'Masukkan kelurahan' },
+  ], []);
+
+  const maxPostal = 10;
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    // khusus postalCode, hanya digit
+    const val = name === 'postalCode'
+      ? value.replace(/\D/g, '').slice(0, maxPostal)
+      : value;
+    setData(prev => ({ ...prev, [name]: val }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  const handleClear = field => setFormData(prev => ({ ...prev, [field]: '' }));
+  const allFilled = Object.values(data).every(v => v.trim() !== '');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    updateForm({
-      namaAlamat: formData.address,
-      provinsi: formData.province,
-      kota: formData.city,
-      kecamatan: formData.district,
-      kelurahan: formData.subDistrict,
-      kodePos: formData.postalCode,
+    // sanitasi + validasi
+    const sanitized = {};
+    const newErrs = {};
+
+    Object.entries(data).forEach(([k, v]) => {
+      const s = sanitizeField(v);
+      sanitized[k] = s;
+      if (k !== 'postalCode' && !validateField(s)) {
+        newErrs[k] = 'Karakter tidak valid';
+      }
+      if (k === 'postalCode' && !/^\d{5,10}$/.test(s)) {
+        newErrs[k] = 'Kode pos harus 5–10 digit';
+      }
     });
 
-    console.log('Alamat Data disimpan di context:', formData);
+    setErrors(newErrs);
+    if (Object.keys(newErrs).length) return;
+
+    updateForm({
+      namaAlamat: sanitized.address,
+      provinsi: sanitized.province,
+      kota: sanitized.city,
+      kecamatan: sanitized.district,
+      kelurahan: sanitized.subDistrict,
+      kodePos: sanitized.postalCode,
+    });
     navigate('/pekerjaan');
   };
 
-  const renderInput = (label, name, placeholder, isSelect = false, options = []) => (
-    <Form.Group className="mb-3" controlId={name}>
-      <Form.Label className="fw-semibold small">{label}</Form.Label>
-      <div className="position-relative">
-        <Form.Control
-          type="text"
-          name={name}
-          value={formData[name]}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className="border-info border-2 rounded-3"
-        />
-        {formData[name] && (
-          <button type="button" onClick={() => handleClear(name)}
-            className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle"
-            style={{ width: '28px', height: '28px', fontSize: '16px', lineHeight: '1' }}>
-            ✕
-          </button>
-        )}
-      </div>
-    </Form.Group>
-  );
-
   return (
-    <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
-      <div className="p-3 ps-4"><img src={logo} alt="Wondr Logo" style={{ width: '130px' }} /></div>
-      <div className="flex-grow-1 d-flex align-items-center justify-content-center">
-        <Container className="p-4 bg-white rounded-4 shadow" style={{
-          maxWidth: '1200px', width: '95vw', maxHeight: '100vh', overflowY: 'auto'
-        }}>
+    <div className="page-wrapper font-poppins">
+      <header className="p-3 ps-4">
+        <img
+          src={logo}
+          alt="Wondr Logo"
+          className="header-logo"
+          onClick={() => navigate('/')}
+        />
+      </header>
+
+      <main className="flex-grow-1 d-flex align-items-center justify-content-center">
+        <Container className="form-container">
           <Row className="align-items-center">
             <Col md={6}>
               <h2 className="fw-bold mb-3">Apa alamat kamu di e‑KTP/IKD?</h2>
               <p className="text-muted mb-4">Pastikan detail sesuai e‑KTP/IKD ya.</p>
               <Form onSubmit={handleSubmit}>
-                {renderInput('Alamat Kamu', 'address', 'Masukkan alamat lengkap')}
-                {renderInput('Provinsi', 'province', 'Masukkan provinsi')}
-                {renderInput('Kabupaten/Kota', 'city', 'Masukkan kota')}
-                {renderInput('Kecamatan', 'district', 'Masukkan kecamatan')}
-                {renderInput('Kelurahan', 'subDistrict', 'Masukkan kelurahan')}
-                {renderInput('Kode Pos', 'postalCode', 'Masukkan kode pos')}
-                <Button type="submit" variant="info" className="fw-bold w-100 rounded-pill py-2"
-                  style={{ backgroundColor: '#2ce3dc', border: 'none' }}>
+                {inputs.map(({ label, name, placeholder }) => (
+                  <Form.Group className="mb-3" controlId={name} key={name}>
+                    <Form.Label className="fw-semibold small">{label}</Form.Label>
+                    <div className="position-relative">
+                      <Form.Control
+                        type="text"
+                        name={name}
+                        value={data[name]}
+                        onChange={handleChange}
+                        placeholder={placeholder}
+                        className="form-control-custom"
+                        isInvalid={!!errors[name]}
+                      />
+                      {data[name] && (
+                        <button
+                          type="button"
+                          onClick={() => setData(prev => ({ ...prev, [name]: '' }))}
+                          className="btn-clear"
+                          aria-label={`Hapus ${label}`}
+                        >
+                          ×
+                        </button>
+                      )}
+                      <Form.Control.Feedback type="invalid">
+                        {errors[name]}
+                      </Form.Control.Feedback>
+                    </div>
+                  </Form.Group>
+                ))}
+
+                <Form.Group className="mb-3" controlId="postalCode">
+                  <Form.Label className="fw-semibold small">Kode Pos</Form.Label>
+                  <div className="position-relative">
+                    <Form.Control
+                      type="text"
+                      name="postalCode"
+                      value={data.postalCode}
+                      onChange={handleChange}
+                      placeholder="Masukkan kode pos"
+                      className="form-control-custom"
+                      isInvalid={!!errors.postalCode}
+                    />
+                    {data.postalCode && (
+                      <button
+                        type="button"
+                        onClick={() => setData(prev => ({ ...prev, postalCode: '' }))}
+                        className="btn-clear"
+                        aria-label="Hapus kode pos"
+                      >
+                        ×
+                      </button>
+                    )}
+                    <Form.Control.Feedback type="invalid">
+                      {errors.postalCode}
+                    </Form.Control.Feedback>
+                  </div>
+                </Form.Group>
+
+                <Button
+                  type="submit"
+                  disabled={!allFilled}
+                  className="btn-wondr fw-bold w-100 rounded-pill py-2"
+                >
                   Lanjutkan
                 </Button>
               </Form>
             </Col>
+
             <Col md={6} className="d-none d-md-flex justify-content-end">
-              <img src={addressImg} alt="Location Icon" className="img-fluid"
-                style={{ maxHeight: '500px', objectFit: 'contain' }} />
+              <img
+                src={addressImg}
+                alt="Location illustration"
+                className="img-fluid"
+                style={{ maxHeight: '500px', objectFit: 'contain' }}
+              />
             </Col>
           </Row>
         </Container>
-      </div>
+      </main>
     </div>
   );
 }

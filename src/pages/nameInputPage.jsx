@@ -7,15 +7,36 @@ import logo from '../assets/wondr-logo.png';
 import badgeIcon from '../assets/Nama-badge.png';
 import { useNavigate } from 'react-router-dom';
 
+// ✂️ Fungsi sanitasi: hapus karakter berisiko SQL
+function sanitizeInput(str) {
+  // menghilangkan ' " ; -- 
+  return str.replace(/['";]|--/g, '').trim();
+}
+
+// ✅ Fungsi validasi: whitelist + panjang maksimal
+function isValidName(str) {
+  // hanya huruf, angka, spasi, 1–50 karakter
+  return /^[a-zA-Z0-9\s]{1,50}$/.test(str);
+}
+
 export default function NameInputPage() {
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    console.log('Nama disimpan:', trimmed);
+    const clean = sanitizeInput(name);
+    if (!clean) {
+      setError('Nama tidak boleh kosong setelah disanitasi.');
+      return;
+    }
+    if (!isValidName(clean)) {
+      setError('Hanya huruf, angka, dan spasi. Maksimal 50 karakter.');
+      return;
+    }
+    setError('');
+    console.log('Nama bersih dan valid:', clean);
     navigate('/phone');
   };
 
@@ -24,24 +45,15 @@ export default function NameInputPage() {
       <header className="p-3 ps-4">
         <img src={logo} alt="Wondr Logo" width={130} loading="eager" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}/>
       </header>
-
       <main className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 rounded-5 shadow bg-white my-3">
           <Row className="align-items-center">
             <Col md={6} className="d-none d-md-flex justify-content-center">
-              <img
-                src={badgeIcon}
-                alt="Badge Illustration"
-                className="img-fluid"
-                style={{ maxWidth: '80%', maxHeight: '500px' }}
-                loading="lazy"
-              />
+              <img src={badgeIcon} alt="Badge Illustration" className="img-fluid" style={{ maxWidth: '80%', maxHeight: '500px' }} loading="lazy" />
             </Col>
-
             <Col md={6}>
               <h2 className="fw-bold text-dark">Siapa Nama Panggilanmu?</h2>
               <p className="text-muted">Biarkan kami bisa mengenalmu lebih dekat</p>
-
               <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="nickname">
                   <Form.Label className="fw-semibold">Nama Kamu</Form.Label>
@@ -52,30 +64,17 @@ export default function NameInputPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="rounded-pill px-4 py-2 border-bni-teal"
-                      required
                       aria-label="Nama panggilan"
                       maxLength={50}
                     />
                     {name && (
-                      <button
-                        type="button"
-                        onClick={() => setName('')}
-                        className="btn-clear"
-                        aria-label="Hapus nama"
-                      >
-                        ×
-                      </button>
+                      <button type="button" onClick={() => setName('')} className="btn-clear" aria-label="Hapus nama">×</button>
                     )}
                   </div>
                 </Form.Group>
-
+                {error && <p className="text-danger mt-2">{error}</p>}
                 <div className="text-center mt-4">
-                  <Button
-                    type="submit"
-                    className="btn-wondr"
-                  >
-                    Lanjutkan
-                  </Button>
+                  <Button type="submit" className="btn-wondr">Lanjutkan</Button>
                 </div>
               </Form>
             </Col>

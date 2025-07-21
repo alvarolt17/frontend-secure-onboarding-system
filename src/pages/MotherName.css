@@ -1,0 +1,32 @@
+.border-brand {
+  border: 2px solid #00B4D8 !important; /* Wondr-teal */
+}
+
+.btn-wondr {
+  background-color: #00B4D8;
+  border-color: #00B4D8;
+  color: #fff;
+}
+
+.btn-wondr:disabled {
+  opacity: 0.6;
+}
+
+.btn-wondr:not(:disabled):hover {
+  background-color: #0096C7 !important;
+}
+
+.btn-clear {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #E9ECEF;
+  color: #495057;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

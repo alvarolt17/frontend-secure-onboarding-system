@@ -4,13 +4,26 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './EmailInput.css';
 import logo from '../assets/wondr-logo.png';
 import emailIcon from '../assets/email.png';
-import closeIcon from '../assets/close.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import validator from 'validator';
+
+// ✂️ Sanitasi input email
+function sanitizeEmail(input) {
+  const trimmed = input.trim();
+  const normalized = validator.normalizeEmail(trimmed, { gmail_remove_dots: false }) || trimmed;
+  return normalized.toLowerCase();
+}
+
+// ✅ Validasi email format
+function validateEmail(email) {
+  return validator.isEmail(email);
+}
 
 export default function EmailInputPage() {
   const [email, setEmail] = useState('');
   const maxLen = 50;
+  const [touched, setTouched] = useState(false);
   const navigate = useNavigate();
   const { data, updateForm } = useFormData();
 
@@ -18,16 +31,27 @@ export default function EmailInputPage() {
     console.log('🔍 Context formData now:', data);
   }, [data]);
 
-  const handleClear = () => setEmail('');
+  const raw = email;
+  const sanitized = sanitizeEmail(raw);
+  const isValid = sanitized.length > 0 && sanitized.length <= maxLen && validateEmail(sanitized);
 
-  const trimmed = email.trim();
-  const isValid = trimmed.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+  const handleChange = e => {
+    setEmail(e.target.value);
+    if (!touched) setTouched(true);
+  };
+
+  const handleClear = () => {
+    setEmail('');
+    setTouched(false);
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
+    setTouched(true);
     if (!isValid) return;
-    updateForm({ email: trimmed });
-    console.log('✅ Email saved to context:', trimmed);
+
+    updateForm({ email: sanitized });
+    console.log('✅ Email tersanitasi dan valid:', sanitized);
     navigate('/password');
   };
 
@@ -64,20 +88,27 @@ export default function EmailInputPage() {
                       type="email"
                       placeholder="contoh: you@mail.com"
                       value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      onChange={handleChange}
                       maxLength={maxLen}
                       className="border-dashed rounded-pill ps-4 pe-5 py-2"
-                      isInvalid={trimmed.length > 0 && !isValid}
+                      isInvalid={touched && !isValid}
                       required
                     />
-        
+                    {email && (
+                      <button type="button" onClick={handleClear} className="btn-clear" aria-label="Hapus email">×</button>
+                    )}
                   </div>
 
                   <div className="text-end small text-muted mb-3">
-                    {trimmed.length}/{maxLen}
+                    {sanitized.length}/{maxLen}
                   </div>
 
-                  {/* Tips */}
+                  {touched && !isValid && (
+                    <Form.Text className="text-danger">
+                      Format email tidak valid
+                    </Form.Text>
+                  )}
+
                   <div className="ps-3 tips-wrapper">
                     <strong>Pastikan:</strong>
                     <ul className="tips-list">
@@ -86,13 +117,6 @@ export default function EmailInputPage() {
                       <li>Email dapat menerima pesan masuk</li>
                     </ul>
                   </div>
-
-                  {/* Validation message below input */}
-                  {trimmed && !isValid && (
-                    <Form.Text className="text-danger">
-                      Format email tidak valid
-                    </Form.Text>
-                  )}
                 </Form.Group>
 
                 <div className="d-flex justify-content-center mt-4">
