@@ -9,6 +9,24 @@ import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
 import { setupRecaptcha, sendOtp } from '../firebase'; // Import fungsi Firebase
 
+// --- Input Sanitization and Validation Functions ---
+// 🔍 Sanitasi: hapus semua karakter non-digit, dan optional leading zeroes
+function sanitizePhone(raw) {
+  // Ambil hanya digit
+  let digits = raw.replace(/\D/g, '');
+  // Hilangkan leading zeros (jika ada)
+  digits = digits.replace(/^0+/, '');
+  return digits;
+}
+
+// ✅ Validasi: sesuai format Indonesia (8–12 digit setelah +62)
+function validatePhone(digits) {
+  // Adjusted regex to match the previous OTP implementation's validation range
+  // It now allows 8 to 12 digits after +62, starting with 1-9 (no leading zero)
+  return /^[1-9][0-9]{7,11}$/.test(digits);
+}
+// --- End Input Sanitization and Validation Functions ---
+
 export default function PhoneInputPage() {
   const [phone, setPhone] = useState('');
   const [touched, setTouched] = useState(false);
@@ -20,18 +38,12 @@ export default function PhoneInputPage() {
   // Reference for reCAPTCHA container
   const recaptchaContainerRef = React.useRef(null);
 
-  const validatePhone = (value) => {
-    const num = value.replace(/\D/g, '');
-    // Regex untuk nomor telepon Indonesia (misal: 8 digit minimum setelah +62)
-    // Sesuaikan regex ini jika ada format spesifik lain yang Anda inginkan
-    return /^[1-9][0-9]{7,12}$/.test(num); // Contoh: 8-13 digit setelah +62 (tanpa 0 di awal)
-  };
-
-  const isValid = validatePhone(phone);
+  // Apply sanitization to the phone input before validation
+  const cleanedPhone = sanitizePhone(phone);
+  const isValid = validatePhone(cleanedPhone);
 
   const handleChange = (e) => {
-    const raw = e.target.value.replace(/\D/g, '');
-    setPhone(raw);
+    setPhone(e.target.value);
     if (!touched) setTouched(true);
   };
 
@@ -45,11 +57,12 @@ export default function PhoneInputPage() {
 
     try {
       // Format nomor telepon ke format internasional E.164 (+62xxxxxxxxxx)
-      const fullPhoneNumber = `+62${phone}`;
+      // Use the cleanedPhone for sending OTP as it's already sanitized and validated
+      const fullPhoneNumber = `+62${cleanedPhone}`;
       await sendOtp(fullPhoneNumber);
-      updateForm({ nomorTelepon: phone }); // Simpan nomor telepon ke context
+      updateForm({ nomorTelepon: cleanedPhone }); // Simpan nomor telepon yang sudah bersih ke context
       navigate('/otp'); // Navigasi ke halaman OTP setelah OTP terkirim
-      console.log('Phone number submitted:', phone);
+      console.log('Phone number submitted:', cleanedPhone);
       console.log('Context data:', data);
     } catch (err) {
       console.error("Failed to send OTP:", err);
@@ -93,10 +106,11 @@ export default function PhoneInputPage() {
             <Col md={6}>
               <h2 className="mb-3 fw-bold">Isi Nomor HP Kamu</h2>
               <p className="text-muted mb-4">Jangan lupa gunakan nomor aktif ya!</p>
+
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Group controlId="phone">
                   <Form.Label className="fw-semibold">Nomor HP</Form.Label>
-                  <InputGroup className={touched && (isValid ? 'is-valid' : 'is-invalid')}>
+                  <InputGroup className={touched ? (isValid ? 'is-valid' : 'is-invalid') : ''}>
                     <InputGroup.Text className="px-3">
                       <img src={indonesiaFlag} alt="" width={24} height={16} />
                       <span className="ps-2">+62</span>
@@ -108,12 +122,12 @@ export default function PhoneInputPage() {
                       onChange={handleChange}
                       aria-invalid={touched && !isValid}
                       required
-                      maxLength={13}
+                      maxLength={15}
                     />
                   </InputGroup>
                   {touched && !isValid && (
                     <Form.Control.Feedback type="invalid" className="d-block mt-1">
-                      Format nomor HP tidak valid
+                      Masukkan 8–12 digit nomor aktif (tanpa 0 pertama).
                     </Form.Control.Feedback>
                   )}
                   {error && ( // Tampilkan error jika ada
