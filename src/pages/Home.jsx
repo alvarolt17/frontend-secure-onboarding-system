@@ -40,12 +40,13 @@ export default function Home() {
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="ms-auto fw-semibold text-white">
-            <Nav.Link className="text-white" href="#home" onClick={() => setExpanded(false)}>Home</Nav.Link>
-            <Nav.Link className="text-white" href="#products" onClick={() => setExpanded(false)}>Product &amp; Services</Nav.Link>
-            <Nav.Link className="text-white" href="#info" onClick={() => setExpanded(false)}>Information</Nav.Link>
-            <Nav.Link className="text-white" href="#faq" onClick={() => setExpanded(false)}>FAQ</Nav.Link>
+            <Nav.Link className="text-white"  onClick={() => openExternal('https://wondr.bni.co.id')}>Home</Nav.Link>
+            <Nav.Link className="text-white" onClick={() => openExternal('https://bni.co.id/en-us/personal/savings')}>Product &amp; Services</Nav.Link>
+            <Nav.Link className="text-white" onClick={() => openExternal('https://www.bni.co.id/id-id/perseroan/tentang-bni')}>Information</Nav.Link>
+            <Nav.Link className="text-white" onClick={() => openExternal('https://wondr.bni.co.id/faq')}>FAQ</Nav.Link>
             <Nav.Link className="text-white" href="/login" onClick={() => setExpanded(false)}>Login</Nav.Link>
             <Nav.Link className="text-white" href="/terms" onClick={() => setExpanded(false)}>SignUp</Nav.Link>
+            
             {/* {['Home', 'Product & Services', 'Information', 'FAQ', 'Login'].map(label => (
               <Nav.Link
                 key={label}
