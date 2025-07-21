@@ -33,7 +33,10 @@ export default function PhoneInputPage() {
     if (!isValid) return;
 
     updateForm({ nomorTelepon:phone });
-    navigate('/email');
+    // navigate('/email');
+    navigate('/otp'); // Navigate to OTP page after phone input
+    console.log('Phone number submitted:', phone);
+    console.log('Context data:', data);
   };
 
   useEffect(() => {
