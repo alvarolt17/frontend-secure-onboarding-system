@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import './phoneOtpInputPage.css';
 import logo from '../assets/wondr-logo.png';
 import phoneIcon from '../assets/otp.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
 import OtpInput from 'react-otp-input';
+import { verifyOtp, sendOtp } from '../firebase'; // Import fungsi Firebase
 
 export default function PhoneOtpInputPage() {
   const [otp, setOtp] = useState('');
-  const [countdown, setCountdown] = useState(120); // 1. State untuk countdown
+  const [countdown, setCountdown] = useState(120);
+  const [loading, setLoading] = useState(false); // State untuk loading
+  const [error, setError] = useState(null); // State untuk error
+  const [resendStatus, setResendStatus] = useState(null); // 'success' or 'error' for resend
   const navigate = useNavigate();
   const { data, updateForm } = useFormData();
 
   const isOtpValid = otp.length === 6;
 
-  // 2. useEffect untuk menjalankan timer
   useEffect(() => {
     if (countdown > 0) {
       const timer = setInterval(() => {
@@ -26,18 +29,57 @@ export default function PhoneOtpInputPage() {
     }
   }, [countdown]);
   
-  // 3. Fungsi untuk handle kirim ulang
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
+    setLoading(true);
+    setError(null);
+    setResendStatus(null);
     console.log("Mengirim ulang OTP...");
-    // Di sini tempat untuk memanggil API pengiriman OTP
-    setCountdown(60); // Reset timer
+    try {
+      // Pastikan nomor telepon diambil dari context
+      const phoneNumberFromContext = data.nomorTelepon;
+      if (!phoneNumberFromContext) {
+        throw new Error("Nomor telepon tidak ditemukan. Harap kembali ke halaman sebelumnya.");
+      }
+      const fullPhoneNumber = `+62${phoneNumberFromContext}`;
+      await sendOtp(fullPhoneNumber); // Panggil fungsi sendOtp lagi
+      setCountdown(60); // Reset timer ke 60 detik setelah kirim ulang
+      setResendStatus('success');
+      console.log("OTP berhasil dikirim ulang!");
+    } catch (err) {
+      console.error("Gagal mengirim ulang OTP:", err);
+      if (err.code === 'auth/too-many-requests') {
+        setError('Terlalu banyak permintaan pengiriman ulang. Harap tunggu sebentar.');
+      } else {
+        setError('Gagal mengirim ulang OTP. Silakan coba lagi.');
+      }
+      setResendStatus('error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isOtpValid) return;
-    updateForm({ otp: otp });
-    navigate('/email');
+
+    setLoading(true);
+    setError(null); // Clear previous errors
+
+    try {
+      await verifyOtp(otp); // Panggil fungsi verifyOtp
+      updateForm({ otp: otp });
+      navigate('/email'); // Navigasi ke halaman berikutnya setelah verifikasi berhasil
+      console.log('OTP submitted and verified:', otp);
+    } catch (err) {
+      console.error("Failed to verify OTP:", err);
+      if (err.code === 'auth/invalid-verification-code') {
+        setError('Kode OTP salah atau telah kedaluwarsa. Silakan coba lagi.');
+      } else {
+        setError('Gagal memverifikasi OTP. Silakan coba lagi.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,15 +116,30 @@ export default function PhoneOtpInputPage() {
                   }}
                 />
                 
-                {/* 4. Tampilkan countdown atau tombol kirim ulang */}
+                {error && ( // Tampilkan error jika ada
+                  <Alert variant="danger" className="mt-3">
+                    {error}
+                  </Alert>
+                )}
+                {resendStatus === 'success' && (
+                  <Alert variant="success" className="mt-3">
+                    OTP berhasil dikirim ulang!
+                  </Alert>
+                )}
+                {resendStatus === 'error' && (
+                  <Alert variant="danger" className="mt-3">
+                    Gagal mengirim ulang OTP.
+                  </Alert>
+                )}
+
                 <div className="text-center mt-3">
                   {countdown > 0 ? (
                     <p className="text-muted small">
                       Kirim ulang kode dalam {countdown} detik
                     </p>
                   ) : (
-                    <Button variant="link" size="sm" onClick={handleResendOtp}>
-                      Kirim ulang OTP
+                    <Button variant="link" size="sm" onClick={handleResendOtp} disabled={loading}>
+                      {loading ? 'Mengirim...' : 'Kirim ulang OTP'}
                     </Button>
                   )}
                 </div>
@@ -91,9 +148,9 @@ export default function PhoneOtpInputPage() {
                   <Button
                     type="submit"
                     className="btn-wondr px-5 py-2 rounded-pill fw-bold"
-                    disabled={!isOtpValid}
+                    disabled={!isOtpValid || loading}
                   >
-                    Lanjutkan
+                    {loading ? 'Memverifikasi...' : 'Lanjutkan'}
                   </Button>
                 </div>
               </Form>

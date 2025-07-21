@@ -54,6 +54,7 @@ export default function TujuanPembukaanRekening() {
           : '0' + (data.nomorTeleponWali || '')
       }
     };
+    console.log('Request Payload:', payload);
 
     try {
       // const response = await fetch('https://talented-julie-solely-piano.trycloudflare.com/api/auth/register', {
