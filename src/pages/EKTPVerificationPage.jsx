@@ -62,11 +62,13 @@ export default function EKTPVerificationPage() {
     setLoading(true);
 
     try {
+
       const resp = await fetch('https://.../verify-nik', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
       });
+
       const data = await resp.json();
       if (resp.ok && data.valid) {
         navigate('/tabungan');

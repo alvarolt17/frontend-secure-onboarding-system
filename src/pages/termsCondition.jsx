@@ -28,6 +28,7 @@ const TermsCondition = () => {
         <div className={styles.imageWrapper}>
           <img src={logo} alt="Ilustrasi" className={styles.imgLarge} />
         </div>
+        
         <div className={styles.contentWrapper}>
           <h1>Terms and Conditions</h1>
           <div className={styles.kontenTeks}>

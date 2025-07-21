@@ -1,0 +1,108 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100wh;
+    background-image: url('../assets/Dashboard.png');
+    background-size: cover;
+}
+
+
+/* HEADER */
+.header {
+    padding: 10px 40px;
+}
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
+.headerIcon {
+    max-height: 50px;
+}
+
+
+/* Profile */
+
+.profileContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid white;
+    border-radius: 25px;
+    padding: 3px ;
+    padding-right: 10px;
+    margin: 0 10px;
+  }
+  
+  .profileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .profileText {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  
+  .profileName {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+  }
+  
+  .profileTitle {
+    font-size: 0.6rem;
+    color: white;
+  }
+
+
+/* MAIN CONTENT */
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+
+}
+.mainContent h1{
+    color: white;
+    font-size: 70px;
+    margin: 0;
+}
+
+.mainContent h5{
+    color: white;
+    margin: 20px 0px;
+}
+
+.bar{
+    display: flex;
+    background-color: white;
+    border-radius: 50px;
+    padding: 10px 10px 10px 10px;
+    
+}
+
+.bar p{
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0; 
+}
+.bar p:nth-of-type(2) {
+    margin: 0px 100px;
+}
+.bar p:nth-of-type(3) {
+    padding: 3px 10px;
+}
+
+.bar p:first-child {
+    background-color: orange;
+    border-radius: 20px;
+    padding: 3px 10px;
+    
+}

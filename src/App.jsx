@@ -8,18 +8,19 @@ import 'slick-carousel/slick/slick-theme.css';
 import Home from "./pages/Home";
 import NameInputPage from "./pages/nameInputPage";
 import PhoneInputPage from "./pages/phoneInputPage";
+import PhoneOtpInputPage from './pages/phoneOtpInputPage';
 import EmailInputPage from "./pages/emailInputPage";
 import CreatePasswordPage from "./pages/CreatePasswordPage";
 import EKTPVerificationPage from "./pages/EKTPVerificationPage";
 import JenisTabunganPage from "./pages/JenisTabunganPage";
-import TermsCondition from "./pages/TermsCondition";
-import Undang from "./pages/Undang";
+import TermsCondition from "./pages/termsCondition";
+import Undang from "./pages/undang";
 import WondrLanding from "./pages/WondrLanding";
 import PersonalDataForm from "./pages/PersonalDataForm";
 import MotherNamePage from "./pages/MotherNamePage";
 import AddressInputPage from "./pages/AddressInputPage";
 import OccupationPage from "./pages/OccupationPage";
-import WaliPage from "./pages/WaliPage";
+import WaliPage from "./pages/waliPage";
 import PenghasilanPage from "./pages/PenghasilanPage";
 import JumlahGaji from "./pages/JumlahGaji";
 import TujuanPembukaanRekening from "./pages/tujuanPembukaanRekening";
@@ -28,6 +29,12 @@ import AccountConfirmation from './pages/AccountConfirmation';
 
 import WaliIdentityPage from './pages/waliIdentityPage';
 
+// loginForm
+import LoginForm from './Login/LoginForm';
+
+// Dashboard
+import Dashboard from './Dashboard/Dashboard';
+
 function App() {
   return (
     <FormProvider>
@@ -35,6 +42,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/name" element={<NameInputPage />} />
         <Route path="/phone" element={<PhoneInputPage />} />
+        <Route path="/phoneOtp" element={<PhoneOtpInputPage />} />
         <Route path="/email" element={<EmailInputPage />} />
         <Route path="/password" element={<CreatePasswordPage />} />
         <Route path="/ktp" element={<EKTPVerificationPage />} />
@@ -53,6 +61,8 @@ function App() {
         <Route path="/jenisKartuPage" element={<JenisKartuPage />} />
         <Route path="/IdentitasWali" element={<WaliIdentityPage/>} />
         <Route path="/summary" element={<AccountConfirmation/>} />
+        <Route path="/login" element={<LoginForm />} /> {/* Pastikan baris ini ada! */}
+        <Route path="/dashboard" element={<Dashboard />} /> {/* Pastikan baris ini ada! */}
       </Routes>
     </FormProvider>
   );

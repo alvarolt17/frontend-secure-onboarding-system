@@ -8,6 +8,7 @@ import background from '../assets/LandingPageNew.png';
 import './Home.css';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
@@ -39,7 +40,13 @@ export default function Home() {
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="ms-auto fw-semibold text-white">
-            {['Home', 'Product & Services', 'Information', 'FAQ', 'Login'].map(label => (
+            <Nav.Link className="text-white" href="#home" onClick={() => setExpanded(false)}>Home</Nav.Link>
+            <Nav.Link className="text-white" href="#products" onClick={() => setExpanded(false)}>Product &amp; Services</Nav.Link>
+            <Nav.Link className="text-white" href="#info" onClick={() => setExpanded(false)}>Information</Nav.Link>
+            <Nav.Link className="text-white" href="#faq" onClick={() => setExpanded(false)}>FAQ</Nav.Link>
+            <Nav.Link className="text-white" href="/login" onClick={() => setExpanded(false)}>Login</Nav.Link>
+            <Nav.Link className="text-white" href="/terms" onClick={() => setExpanded(false)}>SignUp</Nav.Link>
+            {/* {['Home', 'Product & Services', 'Information', 'FAQ', 'Login'].map(label => (
               <Nav.Link
                 key={label}
                 href={`#${label.toLowerCase().replace(/ & /g, '_').replace(/\s+/g, '-')}`}
@@ -55,7 +62,7 @@ export default function Home() {
               onClick={() => { setExpanded(false); handleRegister(); }}
             >
               Sign Up
-            </Nav.Link>
+            </Nav.Link> */}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

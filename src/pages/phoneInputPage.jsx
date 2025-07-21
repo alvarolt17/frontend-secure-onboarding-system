@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Form, Button, InputGroup } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import './phoneInputPage.css';
 import logo from '../assets/wondr-logo.png';
 import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 // 🔍 Sanitasi: hapus semua karakter non-digit, dan optional leading zeroes
 function sanitizePhone(raw) {
@@ -64,6 +66,7 @@ export default function PhoneInputPage() {
             <Col md={6}>
               <h2 className="mb-3 fw-bold">Isi Nomor HP Kamu</h2>
               <p className="text-muted mb-4">Jangan lupa gunakan nomor aktif ya!</p>
+              
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Group controlId="phone">
                   <Form.Label className="fw-semibold">Nomor HP</Form.Label>

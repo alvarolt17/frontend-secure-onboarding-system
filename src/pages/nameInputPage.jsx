@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import './NameInput.css';
+import './nameInput.css';
 import logo from '../assets/wondr-logo.png';
 import badgeIcon from '../assets/Nama-badge.png';
 import { useNavigate } from 'react-router-dom';
