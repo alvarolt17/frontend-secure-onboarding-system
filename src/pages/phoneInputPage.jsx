@@ -9,23 +9,32 @@ import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+// 🔍 Sanitasi: hapus semua karakter non-digit, dan optional leading zeroes
+function sanitizePhone(raw) {
+  // Ambil hanya digit
+  let digits = raw.replace(/\D/g, '');
+  // Hilangkan leading zeros (jika ada)
+  digits = digits.replace(/^0+/, '');
+  return digits;
+}
+
+// ✅ Validasi: sesuai format Indonesia (8–12 digit setelah +62)
+function validatePhone(digits) {
+  return /^[1-9][0-9]{7,11}$/.test(digits);
+}
+
 export default function PhoneInputPage() {
   const [phone, setPhone] = useState('');
   const [touched, setTouched] = useState(false);
   const navigate = useNavigate();
   const { data, updateForm } = useFormData();
 
-  const validatePhone = (value) => {
-    const num = value.replace(/\D/g, '');
-    return /^[1-9][0-9]{7,50}$/.test(num);
-  };
-
-  const isValid = validatePhone(phone);
+  const cleaned = sanitizePhone(phone);
+  const isValid = validatePhone(cleaned);
 
   const handleChange = (e) => {
-    const raw = e.target.value.replace(/\D/g, '');
-    setPhone(raw);
-    if (!touched) setTouched(true);a
+    setPhone(e.target.value);
+    if (!touched) setTouched(true);
   };
 
   const handleSubmit = (e) => {
@@ -33,7 +42,8 @@ export default function PhoneInputPage() {
     setTouched(true);
     if (!isValid) return;
 
-    updateForm({ nomorTelepon:phone });
+    // Gunakan cleaned number
+    updateForm({ nomorTelepon: cleaned });
     navigate('/email');
   };
 
@@ -60,7 +70,7 @@ export default function PhoneInputPage() {
               <Form noValidate onSubmit={handleSubmit}>
                 <Form.Group controlId="phone">
                   <Form.Label className="fw-semibold">Nomor HP</Form.Label>
-                  <InputGroup className={touched && (isValid ? 'is-valid' : 'is-invalid')}>
+                  <InputGroup className={touched ? (isValid ? 'is-valid' : 'is-invalid') : ''}>
                     <InputGroup.Text className="px-3">
                       <img src={indonesiaFlag} alt="" width={24} height={16} />
                       <span className="ps-2">+62</span>
@@ -72,22 +82,18 @@ export default function PhoneInputPage() {
                       onChange={handleChange}
                       aria-invalid={touched && !isValid}
                       required
-                      maxLength={13}
+                      maxLength={15}
                     />
                   </InputGroup>
                   {touched && !isValid && (
                     <Form.Control.Feedback type="invalid" className="d-block mt-1">
-                      Format nomor HP tidak valid
+                      Masukkan 8–12 digit nomor aktif (tanpa 0 pertama).
                     </Form.Control.Feedback>
                   )}
                 </Form.Group>
 
                 <div className="text-center mt-4">
-                  <Button
-                    type="submit"
-                    className="btn-wondr px-5 py-2 rounded-pill fw-bold"
-                    disabled={!isValid}
-                  >
+                  <Button type="submit" className="btn-wondr px-5 py-2 rounded-pill fw-bold" disabled={!isValid}>
                     Lanjutkan
                   </Button>
                 </div>

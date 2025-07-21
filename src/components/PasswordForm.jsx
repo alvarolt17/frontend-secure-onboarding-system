@@ -4,6 +4,12 @@ import zxcvbn from 'zxcvbn';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
 
+// 🔍 Sanitasi input password: trim dan hapus karakter kontrol
+function sanitizePassword(pwd) {
+  // Hilangkan spasi awal/akhir dan karakter non-cetak
+  return pwd.trim().replace(/[\x00-\x1F\x7F]/g, '');
+}
+
 export default function PasswordForm() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm]   = useState('');
@@ -22,16 +28,16 @@ export default function PasswordForm() {
   ];
 
   const handlePasswordChange = e => {
-    const pwd = e.target.value;
-    setPassword(pwd);
-    setStrength(zxcvbn(pwd).score);
-    if (confirm) validateConfirm(pwd, confirm);
+    const cleaned = sanitizePassword(e.target.value);
+    setPassword(cleaned);
+    setStrength(zxcvbn(cleaned).score);
+    if (confirm) validateConfirm(cleaned, confirm);
   };
 
   const handleConfirmChange = e => {
-    const conf = e.target.value;
-    setConfirm(conf);
-    validateConfirm(password, conf);
+    const cleaned = sanitizePassword(e.target.value);
+    setConfirm(cleaned);
+    validateConfirm(password, cleaned);
   };
 
   const validateConfirm = (pwd, conf) => {
@@ -49,7 +55,6 @@ export default function PasswordForm() {
   const handleSubmit = e => {
     e.preventDefault();
     if (!validateForm()) return;
-
     updateForm({ password });
     navigate('/ktp');
   };

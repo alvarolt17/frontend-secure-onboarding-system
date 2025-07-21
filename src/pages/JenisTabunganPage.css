@@ -1,39 +1,16 @@
-.jenis-tabungan-page {
-  font-family: 'Poppins', sans-serif;
-}
-
-.background-wrapper {
-  flex: 1;
-  background-image: url('../assets/background.png');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-}
-
-.logo-img {
+.jenis-tabungan-page .logo-img {
   width: 130px;
 }
 
-.title-text {
-  font-size: 1.75rem;
+.card-tabungan .icon-img {
+  width: 24px;
+  height: 24px;
 }
 
 .card-tabungan {
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .card-tabungan:hover {
-  transform: scale(1.02);
-}
-
-.icon-img {
-  width: 35px;
-  height: auto;
-}
-
-.text-orange {
-  color: #ff7f00;
-  font-size: 0.9rem;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
 }

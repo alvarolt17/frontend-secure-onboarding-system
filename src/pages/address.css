@@ -1,0 +1,93 @@
+/* src/pages/AddressInputPage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+  --brand-teal: #19e0e0;
+  --brand-orange: #ff8500;
+  --brand-light: #f7f9fa;
+  --border-color: #ddd;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--brand-light);
+  min-height: 100vh;
+  color: #333;
+}
+
+.header-logo {
+  width: 130px;
+  cursor: pointer;
+}
+
+.form-container {
+  max-width: 1200px;
+  width: 95vw;
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.form-control-custom {
+  border: 1px solid var(--border-color);
+  padding-left: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-control-custom:focus {
+  border-color: var(--brand-teal);
+  box-shadow: 0 0 0 0.2rem rgba(25, 224, 224, 0.25);
+}
+
+.btn-clear {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: var(--brand-teal);
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.btn-clear:hover {
+  opacity: 1;
+}
+
+.btn-wondr {
+  background-color: var(--brand-orange);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn-wondr:disabled {
+  opacity: 0.6;
+}
+
+.btn-wondr:not(:disabled):hover {
+  background-color: #e37400;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 1.5rem;
+  }
+}
