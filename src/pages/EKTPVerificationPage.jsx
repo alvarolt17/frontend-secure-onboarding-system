@@ -73,7 +73,9 @@ export default function EKTPVerificationPage() {
     try {
       const resp = await fetch(
         // 'https://christina-carlos-logical-cart.trycloudflare.com/api/dukcapil/verify-nik',
-        'https://hepatitis-label-ccd-similarly.trycloudflare.com/api/dukcapil/verify-nik',
+        // 'https://hepatitis-label-ccd-similarly.trycloudflare.com/api/dukcapil/verify-nik',
+        // 'http://verifikator:8081/api/dukcapil/verify-nik',
+        'http://localhost:8082/api/dukcapil/verify-nik', // Menggunakan localhost dan port yang dipetakan
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

@@ -58,7 +58,7 @@ export default function TujuanPembukaanRekening() {
 
     try {
       // const response = await fetch('https://talented-julie-solely-piano.trycloudflare.com/api/auth/register', {
-        const response = await fetch('https://ventures-designed-seas-hang.trycloudflare.com/api/auth/register', {
+        const response = await fetch('http://localhost:8083/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
