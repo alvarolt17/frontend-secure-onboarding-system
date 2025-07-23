@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 
 // 🔍 Sanitasi input password: trim dan hapus karakter kontrol
 function sanitizePassword(pwd) {
-  // Hilangkan spasi awal/akhir dan karakter non-cetak
   return pwd.trim().replace(/[\x00-\x1F\x7F]/g, '');
 }
 
@@ -15,7 +14,7 @@ export default function PasswordForm() {
   const [confirm, setConfirm]   = useState('');
   const [errors, setErrors]     = useState({});
   const [strength, setStrength] = useState(0);
-  
+
   const { updateForm } = useFormData();
   const navigate = useNavigate();
 
@@ -30,7 +29,8 @@ export default function PasswordForm() {
   const handlePasswordChange = e => {
     const cleaned = sanitizePassword(e.target.value);
     setPassword(cleaned);
-    setStrength(zxcvbn(cleaned).score);
+    const score = zxcvbn(cleaned).score;
+    setStrength(score);
     if (confirm) validateConfirm(cleaned, confirm);
   };
 
@@ -41,13 +41,30 @@ export default function PasswordForm() {
   };
 
   const validateConfirm = (pwd, conf) => {
-    setErrors(prev => ({ ...prev, confirm: pwd !== conf ? 'Password tidak cocok.' : '' }));
+    setErrors(prev => ({
+      ...prev,
+      confirm: pwd !== conf ? 'Password tidak cocok.' : ''
+    }));
   };
 
+  // Validasi lengkap sebelum submit
   const validateForm = () => {
     const errs = {};
-    if (!rules.every(r => r.test(password))) errs.password = 'Password belum memenuhi semua kriteria.';
-    if (password !== confirm) errs.confirm = 'Password tidak cocok.';
+
+    // Validasi aturan dasar
+    if (!rules.every(r => r.test(password))) {
+      errs.password = 'Password belum memenuhi semua kriteria.';
+    }
+    // Cek kekuatan minimal "Sedang"
+    else if (strength < 2) {
+      errs.password = 'Password terlalu lemah. Gunakan kombinasi huruf besar, kecil, angka, dan simbol.';
+    }
+
+    // Validasi konfirmasi
+    if (password !== confirm) {
+      errs.confirm = 'Password tidak cocok.';
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -59,8 +76,8 @@ export default function PasswordForm() {
     navigate('/ktp');
   };
 
-  const variants = [ 'danger', 'danger', 'warning', 'info', 'success' ];
-  const labels   = [ 'Lemah', 'Lemah', 'Sedang', 'Kuat', 'Sangat Kuat' ];
+  const variants = ['danger', 'danger', 'warning', 'info', 'success'];
+  const labels   = ['Lemah', 'Lemah', 'Sedang', 'Kuat', 'Sangat Kuat'];
   const variant  = variants[strength];
   const label    = labels[strength];
   const percent  = (strength / 4) * 100;
