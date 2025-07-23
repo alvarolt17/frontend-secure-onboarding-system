@@ -34,8 +34,11 @@ export default function LoginForm() {
         setSubmitting(true);
 
         try {
+            // ✅ Gunakan base URL dari .env
+            const baseURL = import.meta.env.VITE_BACKEND_BASE_URL; // Mendapatkan base URL dari .env
+            // console.log(baseURL);
             const response = await axios.post(
-                'https://ventures-designed-seas-hang.trycloudflare.com/api/auth/login',
+                `${baseURL}/api/auth/login`,
                 {
                     email: loginData.email,
                     password: loginData.password,
