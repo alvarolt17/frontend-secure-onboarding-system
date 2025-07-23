@@ -7,25 +7,24 @@ import './EKTPVerification.css';
 import logo from '../assets/wondr-logo.png';
 import ktpIcon from '../assets/KTP.png';
 import { useNavigate } from 'react-router-dom';
-import { useFormData } from '../context/formContext'; // import context
+import { useFormData } from '../context/formContext';
 
 // Fungsi sanitasi NIK: hanya digit, ambil max 16
 function sanitizeNik(input) {
   return input.replace(/\D/g, '').slice(0, 16);
 }
 
-// Fungsi sanitasi nama lengkap: trim, buang karakter kontrol, hanya huruf, spasi, dash, apostrof
+// Fungsi sanitasi nama lengkap: trim di akhir, hapus kontrol, batasi karakter
 function sanitizeNama(input) {
   return input
-    .trim()
+    .normalize('NFD') // Untuk huruf beraksen tetap konsisten
     .replace(/[\x00-\x1F\x7F]/g, '') // Hapus karakter kontrol
-    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, ''); // Hanya izinkan huruf, spasi, dash, apostrof
+    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, '') // Izinkan huruf, spasi, dash, apostrof
+    .trim(); // Trim baik di awal dan akhir
 }
 
-// Fungsi sanitasi tanggal lahir: pastikan format YYYY-MM-DD
+// Fungsi sanitasi tanggal lahir: format YYYY-MM-DD, tidak boleh di masa depan
 function sanitizeTanggal(input) {
-  // Memastikan input sesuai format tanggal ISO (YYYY-MM-DD)
-  // dan tidak mengizinkan tanggal di masa depan
   const today = new Date().toISOString().split('T')[0];
   if (input.match(/^\d{4}-\d{2}-\d{2}$/) && input <= today) {
     return input;
@@ -40,9 +39,8 @@ export default function EKTPVerificationPage() {
   const [loading, setLoading] = useState(false);
   const maxNik = 16;
   const navigate = useNavigate();
-  const { updateForm } = useFormData(); // ambil updateForm
+  const { updateForm } = useFormData();
 
-  // Validasi tetap dipertahankan terpisah dari sanitasi
   const isNikValid = nik.length === maxNik && /^\d+$/.test(nik);
   const isNamaValid = namaLengkap.trim().length > 0;
   const isTanggalValid = tanggalLahir !== '';
@@ -52,6 +50,12 @@ export default function EKTPVerificationPage() {
   };
 
   const handleNamaChange = e => {
+    // Terima apa adanya saat mengetik
+    setNamaLengkap(e.target.value);
+  };
+
+  const handleNamaBlur = e => {
+    // Sanitasi setelah selesai mengetik
     setNamaLengkap(sanitizeNama(e.target.value));
   };
 
@@ -66,18 +70,15 @@ export default function EKTPVerificationPage() {
       return;
     }
 
-    // simpan ke context
     updateForm({ nik, namaLengkap, tanggalLahir });
-    
+
     setLoading(true);
     try {
       const resp = await fetch(
-        // 'https://christina-carlos-logical-cart.trycloudflare.com/api/dukcapil/verify-nik',
         'https://hepatitis-label-ccd-similarly.trycloudflare.com/api/dukcapil/verify-nik',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          // Pastikan data yang dikirim adalah hasil dari state yang sudah disanitasi
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
         }
       );
@@ -106,7 +107,12 @@ export default function EKTPVerificationPage() {
         <Container className="p-4 bg-white rounded-4 shadow">
           <Row className="align-items-start">
             <Col md={6} className="d-none d-md-flex justify-content-center">
-              <img src={ktpIcon} alt="e-KTP" className="img-fluid" style={{ maxWidth: '80%', height: '500px' }} />
+              <img
+                src={ktpIcon}
+                alt="e-KTP"
+                className="img-fluid"
+                style={{ maxWidth: '80%', height: '500px' }}
+              />
             </Col>
             <Col md={6} className="d-flex flex-column justify-content-between">
               <div>
@@ -120,7 +126,7 @@ export default function EKTPVerificationPage() {
                       type="text"
                       placeholder="3175031234567890"
                       value={nik}
-                      onChange={handleNikChange} // Gunakan handleNikChange yang sudah disanitasi
+                      onChange={handleNikChange}
                       maxLength={maxNik}
                       className="border-dashed rounded-pill ps-4"
                       isInvalid={nik && !isNikValid}
@@ -139,7 +145,8 @@ export default function EKTPVerificationPage() {
                       type="text"
                       placeholder="John Doe"
                       value={namaLengkap}
-                      onChange={handleNamaChange} // Gunakan handleNamaChange yang sudah disanitasi
+                      onChange={handleNamaChange}
+                      onBlur={handleNamaBlur}
                       className="border-dashed rounded-pill ps-4"
                       isInvalid={namaLengkap && !isNamaValid}
                     />
@@ -151,7 +158,7 @@ export default function EKTPVerificationPage() {
                     <Form.Control
                       type="date"
                       value={tanggalLahir}
-                      onChange={handleTanggalChange} // Gunakan handleTanggalChange yang sudah disanitasi
+                      onChange={handleTanggalChange}
                       max={new Date().toISOString().split('T')[0]}
                       className="border-dashed rounded-pill ps-4"
                       isInvalid={!isTanggalValid}
@@ -162,7 +169,7 @@ export default function EKTPVerificationPage() {
                   <div className="text-center">
                     <Button
                       type="submit"
-                      disabled={loading || !(isNikValid && isNamaValid && isTanggalValid)} // Tombol dinonaktifkan jika ada input tidak valid
+                      disabled={loading || !(isNikValid && isNamaValid && isTanggalValid)}
                       variant="outline-dark"
                       className="px-5 py-2 rounded-pill fw-bold"
                     >
@@ -179,3 +186,4 @@ export default function EKTPVerificationPage() {
     </div>
   );
 }
+

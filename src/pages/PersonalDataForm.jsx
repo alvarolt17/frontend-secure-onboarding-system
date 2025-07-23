@@ -65,12 +65,12 @@ export default function PersonalDataForm() {
                         name={f.name}
                         type="text"
                         value={formik.values[f.name]}
-                        onChange={e =>
-                          formik.setFieldValue(f.name, sanitize(e.target.value))
-                        }
-                        isInvalid={
-                          formik.touched[f.name] && !!formik.errors[f.name]
-                        }
+                        onChange={formik.handleChange} // biarkan user input bebas
+                        onBlur={e => {
+                          formik.setFieldValue(f.name, sanitize(e.target.value));
+                          formik.handleBlur(e); // tetap jalankan validasi formik
+                        }}
+                        isInvalid={formik.touched[f.name] && !!formik.errors[f.name]}
                         placeholder={f.label}
                         maxLength={50}
                         className="border-brand rounded-3"
@@ -81,9 +81,7 @@ export default function PersonalDataForm() {
                         value={formik.values[f.name]}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        isInvalid={
-                          formik.touched[f.name] && !!formik.errors[f.name]
-                        }
+                        isInvalid={formik.touched[f.name] && !!formik.errors[f.name]}
                         className="border-brand rounded-3"
                       >
                         <option value="">-- Pilih --</option>

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-.font-poppins { font-family: 'Poppins', sans-serif; }
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
 
 /* HEADER */
 .header {
@@ -15,41 +17,43 @@
 .headerIcon {
     max-height: 40px;
 }
-  
 
-.container{
-    height: 100vh;
-    width: 100wh;
+/* CONTAINER */
+.container {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
 }
 
-.panel-container{
-    height: auto;
+/* PANEL CONTAINER */
+.panel-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     flex-grow: 1;
     padding: 40px;
-    align-items: stretch;
+    align-items: center;
 }
 
 /* LEFT PANEL */
-.left-panel{
+.left-panel {
     display: flex;
     justify-content: center;
     align-items: center;
-    
 }
 
-.left-panel-image{
+.left-panel-image {
     max-height: 450px;
     width: auto;
 }
 
-
 /* RIGHT PANEL */
-.right-panel{
+.right-panel {
     height: 100%;
-    width: 550px;
+    max-width: 550px;
+    width: 100%;
+    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -57,24 +61,27 @@
     border-radius: 12px;
     background-color: white;
     box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    padding: 40px 20px;
 }
 
-.login-form{
-    
+.login-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 80%;
+    width: 100%;
 }
-.login-form-header{
+
+.login-form-header {
     text-align: center;
 }
+
 .login-form-header h2 {
     font-weight: 550;
     color: #262626;
     margin-bottom: 10px;
     line-height: 1.2;
 }
+
 .login-form-header p {
     color: #8c8c8c;
     font-size: 0.9rem;
@@ -89,36 +96,77 @@
     color: white;
     width: 180px;
     margin-top: 10px;
-  }
+}
 
-
-/* Tambahkan grup gaya baru ini */
+/* INPUT GROUP */
 .input-group {
-    width: 100%; /* Pastikan grup input mengambil lebar penuh dari form */
-    margin-bottom: 20px; /* Beri jarak antar input field */
+    width: 100%;
+    margin-bottom: 20px;
     position: relative;
 }
-  
+
 .input-label {
     font-size: 0.9rem;
     color: #555;
     margin-bottom: 8px;
-    display: block; /* Pastikan label berada di barisnya sendiri */
+    display: block;
 }
-  
+
 .input-field {
     width: 100%;
-    padding: 12px 15\px; /* Beri padding agar lebih lega */
-    border-radius: 8px; /* Sudut lebih tumpul */
-    border: 1px solid #ddd; /* Border yang lebih soft */
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
     background-color: #f9f9f9;
     font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s; /* Animasi transisi */
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
-  
-  /* Efek saat input field di-klik (fokus) */
+
 .input-field:focus {
-    outline: none; /* Hilangkan outline default */
-    border-color: #2ce3dc; /* Ubah warna border saat aktif */
-    box-shadow: 0 0 0 3px rgba(44, 227, 220, 0.2); /* Tambahkan efek glow */
+    outline: none;
+    border-color: #2ce3dc;
+    box-shadow: 0 0 0 3px rgba(44, 227, 220, 0.2);
+}
+
+/* ERROR MESSAGE */
+.error-message {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 768px) {
+    .panel-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .left-panel {
+        display: none;
+    }
+
+    .right-panel {
+        width: 100%;
+        box-shadow: none;
+        padding: 20px 10px;
+    }
+
+    .submit-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 20px;
+    }
+
+    .login-form-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .login-form-header p {
+        font-size: 0.85rem;
+    }
 }
