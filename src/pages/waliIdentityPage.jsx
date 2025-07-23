@@ -1,50 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react'; // <-- Tambahkan useMemo di sini
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../assets/wondr-logo.png';
 import guardianImg from '../assets/Guardian.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext';
 
 export default function WaliIdentityPage() {
   const [data, setData] = useState({
     fullName: '', job: '', address: '', phone: ''
   });
+  const [errors, setErrors] = useState({});
   const { updateForm } = useFormData();
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister();
+
+  useEffect(() => {
+    if (!checkAndRedirect('/identitasWali')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   const handleChange = e => {
     const { name, value } = e.target;
     setData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  const handleClear = name =>
+  const handleClear = name => {
     setData(prev => ({ ...prev, [name]: '' }));
+    // Tidak langsung set error di sini, biarkan validasi form yang menanganinya saat submit
+    // atau tambahkan validasi real-time yang tidak memicu re-render loop
+  };
 
-  const handleSubmit = e => {
+  // Validasi sederhana untuk semua field
+  const validateForm = () => {
+    let newErrors = {};
+    let isValid = true;
+    for (const key in data) {
+      if (data[key].trim() === '') {
+        newErrors[key] = 'Field ini tidak boleh kosong.';
+        isValid = false;
+      }
+    }
+    // Validasi nomor telepon lebih spesifik
+    if (data.phone.trim() !== '' && !/^\d{8,15}$/.test(data.phone.trim())) {
+      newErrors.phone = 'Nomor HP tidak valid (hanya angka, 8-15 digit).';
+      isValid = false;
+    }
+
+    // Hanya update errors state jika ada perubahan signifikan
+    if (JSON.stringify(newErrors) !== JSON.stringify(errors)) {
+      setErrors(newErrors);
+    }
+    return isValid;
+  };
+
+  // Pindahkan validasi yang tidak memicu state update untuk status tombol
+  const isFormTrulyValid = useMemo(() => {
+    // Ini adalah validasi yang sama dengan validateForm, tetapi tanpa setErrors
+    // Ini hanya untuk menentukan status tombol 'disabled'
+    for (const key in data) {
+      if (data[key].trim() === '') return false;
+    }
+    if (data.phone.trim() !== '' && !/^\d{8,15}$/.test(data.phone.trim())) return false;
+    return true;
+  }, [data]); // Dependensi hanya pada 'data'
+
+  // --- DEBUGGING LOGS ---
+  useEffect(() => {
+    console.log('WaliIdentityPage State Update:');
+    console.log('  Current data:', data);
+    console.log('  Current errors:', errors);
+    console.log('  Is form valid for button (derived):', isFormTrulyValid);
+  }, [data, errors, isFormTrulyValid]);
+  // --- END DEBUGGING LOGS ---
+
+  const handleSubmit = async e => {
     e.preventDefault();
+    console.log('handleSubmit called in WaliIdentityPage.');
 
-    // Simpan dengan key sesuai permintaan
+    // Panggil validateForm untuk memperbarui state errors dan mendapatkan status validitas
+    if (!validateForm()) {
+      console.log('Form is not valid, stopping submission.');
+      return;
+    }
+
     updateForm({
       namaLengkapWali: data.fullName,
       pekerjaanWali: data.job,
       alamatWali: data.address,
       nomorTeleponWali: data.phone
     });
+    console.log('Data wali saved to formContext.');
 
-    console.log('Data wali saved:', {
-      namaLengkapWali: data.fullName,
-      pekerjaanWali: data.job,
-      alamatWali: data.address,
-      nomorTeleponWali: data.phone
-    });
+    completeStep('waliIdentityDone');
+    console.log('waliIdentityDone marked as complete in RegisterContext.');
 
+    console.log('Navigating to /penghasilan...');
     navigate('/penghasilan');
   };
 
   const renderInput = (label, name, placeholder) => (
-    <Form.Group className="mb-3" controlId={name} key={name}>
-      <Form.Label className="fw-semibold small">{label}</Form.Label>
+    <Form.Group controlId={name} className="mb-3">
+      <Form.Label>{label}</Form.Label>
       <div className="position-relative">
         <Form.Control
           type="text"
@@ -52,27 +112,33 @@ export default function WaliIdentityPage() {
           value={data[name]}
           onChange={handleChange}
           placeholder={placeholder}
-          className="border-info border-2 rounded-3"
+          className="rounded-pill py-2 ps-4"
+          isInvalid={!!errors[name]}
+          required
         />
         {data[name] && (
           <button
             type="button"
             onClick={() => handleClear(name)}
-            className="btn btn-light position-absolute top-50 end-0 translate-middle-y me-3 rounded-circle"
-            style={{ width: 28, height: 28, fontSize: 16, lineHeight: 1 }}
+            className="btn-clear position-absolute top-50 end-0 translate-middle-y me-3"
+            aria-label={`Hapus ${label}`}
           >
             ✕
           </button>
         )}
+        <Form.Control.Feedback type="invalid">
+          {errors[name]}
+        </Form.Control.Feedback>
       </div>
     </Form.Group>
   );
 
   return (
-    <div className="d-flex flex-column bg-white min-vh-100">
+    <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
       <div className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" style={{ width: 130 }} />
+        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
       </div>
+
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container
           className="p-4 bg-white rounded-4 shadow"
@@ -98,6 +164,7 @@ export default function WaliIdentityPage() {
                   type="submit"
                   className="fw-bold w-100 rounded-pill py-2"
                   style={{ backgroundColor: '#2ce3dc', border: 'none' }}
+                  disabled={!isFormTrulyValid}
                 >
                   Lanjutkan
                 </Button>

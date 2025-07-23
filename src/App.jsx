@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import { FormProvider } from './context/formContext';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { RegisterProvider } from './context/RegisterContext';
 
 import Home from "./pages/Home";
 import NameInputPage from "./pages/nameInputPage";
@@ -38,32 +39,34 @@ import Dashboard from './Dashboard/Dashboard';
 function App() {
   return (
     <FormProvider>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/name" element={<NameInputPage />} />
-        <Route path="/phone" element={<PhoneInputPage />} />
-        <Route path="/otp" element={<PhoneOtpInputPage />} />
-        <Route path="/email" element={<EmailInputPage />} />
-        <Route path="/password" element={<CreatePasswordPage />} />
-        <Route path="/ktp" element={<EKTPVerificationPage />} />
-        <Route path="/tabungan" element={<JenisTabunganPage />} />
-        <Route path="/terms" element={<TermsCondition />} />
-        <Route path="/undang" element={<Undang />} />
-        <Route path="/wondrLanding" element={<WondrLanding />} />
-        <Route path="/personalData" element={<PersonalDataForm />} />
-        <Route path="/namaIbu" element={<MotherNamePage />} />
-        <Route path="/alamat" element={<AddressInputPage />} />
-        <Route path="/pekerjaan" element={<OccupationPage />} />
-        <Route path="/wali" element={<WaliPage />} />
-        <Route path="/penghasilan" element={<PenghasilanPage />} />
-        <Route path="/jumlahGaji" element={<JumlahGaji />} />
-        <Route path="/tujuanPembukaanRekening" element={<TujuanPembukaanRekening />} />
-        <Route path="/jenisKartuPage" element={<JenisKartuPage />} />
-        <Route path="/IdentitasWali" element={<WaliIdentityPage/>} />
-        <Route path="/summary" element={<AccountConfirmation/>} />
-        <Route path="/login" element={<LoginForm />} /> {/* Pastikan baris ini ada! */}
-        <Route path="/dashboard" element={<Dashboard />} /> {/* Pastikan baris ini ada! */}
-      </Routes>
+      <RegisterProvider> {/* Tambahkan RegisterProvider di sini */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/name" element={<NameInputPage />} />
+          <Route path="/phone" element={<PhoneInputPage />} />
+          <Route path="/otp" element={<PhoneOtpInputPage />} />
+          <Route path="/email" element={<EmailInputPage />} />
+          <Route path="/password" element={<CreatePasswordPage />} />
+          <Route path="/ktp" element={<EKTPVerificationPage />} />
+          <Route path="/tabungan" element={<JenisTabunganPage />} />
+          <Route path="/terms" element={<TermsCondition />} />
+          <Route path="/undang" element={<Undang />} />
+          <Route path="/wondrLanding" element={<WondrLanding />} />
+          <Route path="/personalData" element={<PersonalDataForm />} />
+          <Route path="/namaIbu" element={<MotherNamePage />} />
+          <Route path="/alamat" element={<AddressInputPage />} />
+          <Route path="/pekerjaan" element={<OccupationPage />} />
+          <Route path="/wali" element={<WaliPage />} />
+          <Route path="/penghasilan" element={<PenghasilanPage />} />
+          <Route path="/jumlahGaji" element={<JumlahGaji />} />
+          <Route path="/tujuanPembukaanRekening" element={<TujuanPembukaanRekening />} />
+          <Route path="/jenisKartuPage" element={<JenisKartuPage />} />
+          <Route path="/IdentitasWali" element={<WaliIdentityPage/>} />
+          <Route path="/summary" element={<AccountConfirmation/>} />
+          <Route path="/login" element={<LoginForm />} /> {/* Pastikan baris ini ada! */}
+          <Route path="/dashboard" element={<Dashboard />} /> {/* Pastikan baris ini ada! */}
+        </Routes>
+      </RegisterProvider>
     </FormProvider>
   );
 }

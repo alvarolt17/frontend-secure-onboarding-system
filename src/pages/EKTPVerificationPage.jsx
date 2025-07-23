@@ -1,6 +1,6 @@
 // src/pages/EKTPVerificationPage.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './EKTPVerification.css';
@@ -8,6 +8,7 @@ import logo from '../assets/wondr-logo.png';
 import ktpIcon from '../assets/KTP.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // Fungsi sanitasi NIK: hanya digit, ambil max 16
 function sanitizeNik(input) {
@@ -40,6 +41,14 @@ export default function EKTPVerificationPage() {
   const maxNik = 16;
   const navigate = useNavigate();
   const { updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/ktp')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const isNikValid = nik.length === maxNik && /^\d+$/.test(nik);
   const isNamaValid = namaLengkap.trim().length > 0;
@@ -77,7 +86,7 @@ export default function EKTPVerificationPage() {
       // ✅ Gunakan base URL dari .env
       const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL; // Mendapatkan base URL dari .env
       //console.log(baseURL)
-      const resp = await fetch(        
+      const resp = await fetch(
         `${baseURL}/api/dukcapil/verify-nik`,
         {
           method: 'POST',
@@ -89,6 +98,7 @@ export default function EKTPVerificationPage() {
       console.log('Dukcapil response:', data);
       if (resp.ok && data.valid) {
         alert('Verifikasi berhasil!');
+        completeStep('ktpVerified'); // Tandai langkah ini selesai
         navigate('/tabungan');
       } else {
         alert('❌ ' + (data.message || 'Verifikasi gagal.'));
@@ -189,4 +199,3 @@ export default function EKTPVerificationPage() {
     </div>
   );
 }
-

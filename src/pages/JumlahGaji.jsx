@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, ListGroup, Button } from 'react-bootstrap';
 import logo from '../assets/wondr-logo.png';
 import characterImg from '../assets/jumlah-gaji.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 export default function IncomeSelectionForm() {
   const [selected, setSelected] = useState('');
   const { updateForm } = useFormData();
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/jumlahGaji')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const options = [
     'Kurang dari Rp3 juta',
@@ -26,8 +35,9 @@ export default function IncomeSelectionForm() {
 
     updateForm({ rentangGaji: selected });
     console.log('rentangGaji saved:', selected);
+    completeStep('jumlahGajiDone'); // Tandai langkah ini selesai
 
-    navigate('/tujuanPembukaanRekening');  // sesuaikan rute tujuanmu :contentReference[oaicite:1]{index=1}
+    navigate('/tujuanPembukaanRekening');  // sesuaikan rute tujuanmu
   };
 
   return (

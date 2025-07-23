@@ -1,5 +1,5 @@
 // src/pages/AddressInputPage.jsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react'; // Import useEffect
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './address.css';
@@ -7,6 +7,7 @@ import logo from '../assets/wondr-logo.png';
 import addressImg from '../assets/addressicon.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // 🔐 Sanitasi: trim, remove kontrol & tanda berbahaya
 function sanitizeField(str) {
@@ -29,6 +30,14 @@ export default function AddressInputPage() {
   const [errors, setErrors] = useState({});
   const { updateForm } = useFormData();
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/alamat')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const inputs = useMemo(() => [
     { label: 'Alamat Kamu', name: 'address', placeholder: 'Masukkan alamat lengkap' },
@@ -80,6 +89,7 @@ export default function AddressInputPage() {
       kelurahan: sanitized.subDistrict,
       kodePos: sanitized.postalCode,
     });
+    completeStep('addressInputDone'); // Tandai langkah ini selesai
     navigate('/pekerjaan');
   };
 

@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap'; // Merged: Alert added here
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import './phoneOtpInputPage.css';
 import logo from '../assets/wondr-logo.png';
 import phoneIcon from '../assets/otp.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
 import OtpInput from 'react-otp-input';
-import { verifyOtp, sendOtp } from '../firebase'; // Merged: Import Firebase functions
+import { verifyOtp, sendOtp } from '../firebase';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 export default function PhoneOtpInputPage() {
   const [otp, setOtp] = useState('');
   const [countdown, setCountdown] = useState(120);
-  const [loading, setLoading] = useState(false); // Merged: State for loading
-  const [error, setError] = useState(null); // Merged: State for error
-  const [resendStatus, setResendStatus] = useState(null); // Merged: 'success' or 'error' for resend status
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [resendStatus, setResendStatus] = useState(null);
   const navigate = useNavigate();
   const { data, updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
 
   const isOtpValid = otp.length === 6;
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/otp')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   // useEffect to manage the countdown timer
   useEffect(() => {
@@ -68,7 +77,8 @@ export default function PhoneOtpInputPage() {
 
     try {
       await verifyOtp(otp); // Call verifyOtp function
-      updateForm({ otp: otp });
+      updateForm({ otp: otp }); // Jika Anda ingin menyimpan OTP
+      completeStep('otpVerified'); // Tandai otpVerified selesai
       navigate('/email'); // Navigate to the next page after successful verification
       console.log('OTP submitted and verified:', otp);
     } catch (err) {
@@ -148,9 +158,9 @@ export default function PhoneOtpInputPage() {
                       variant="link"
                       size="sm"
                       onClick={handleResendOtp}
-                      disabled={loading} // Merged: Disable resend button when loading
+                      disabled={loading}
                     >
-                      {loading ? 'Mengirim...' : 'Kirim ulang OTP'} {/* Merged: Loading text for resend button */}
+                      {loading ? 'Mengirim...' : 'Kirim ulang OTP'}
                     </Button>
                   )}
                 </div>
@@ -159,9 +169,9 @@ export default function PhoneOtpInputPage() {
                   <Button
                     type="submit"
                     className="btn-wondr px-5 py-2 rounded-pill fw-bold"
-                    disabled={!isOtpValid || loading} // Merged: Disable submit button when loading
+                    disabled={!isOtpValid || loading}
                   >
-                    {loading ? 'Memverifikasi...' : 'Lanjutkan'} {/* Merged: Loading text for submit button */}
+                    {loading ? 'Memverifikasi...' : 'Lanjutkan'}
                   </Button>
                 </div>
               </Form>

@@ -1,15 +1,17 @@
 // src/pages/NameInputPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './nameInput.css';
 import logo from '../assets/wondr-logo.png';
 import badgeIcon from '../assets/Nama-badge.png';
 import { useNavigate } from 'react-router-dom';
+import { useFormData } from '../context/formContext'; // Import useFormData
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // ✂️ Fungsi sanitasi: hapus karakter berisiko SQL
 function sanitizeInput(str) {
-  // menghilangkan ' " ; -- 
+  // menghilangkan ' " ; --
   return str.replace(/['";]|--/g, '').trim();
 }
 
@@ -23,6 +25,15 @@ export default function NameInputPage() {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { updateForm } = useFormData(); // Dapatkan updateForm dari formContext
+  const { completeStep, checkAndRedirect } = useRegister(); // Dapatkan completeStep dan checkAndRedirect dari RegisterContext
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/name')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,7 +48,9 @@ export default function NameInputPage() {
     }
     setError('');
     console.log('Nama bersih dan valid:', clean);
-    navigate('/phone');
+    updateForm({ namaLengkap: clean }); // Simpan data ke formContext
+    completeStep('nameInputDone'); // Tandai langkah ini selesai
+    navigate('/phone'); // Lanjutkan navigasi
   };
 
   return (
@@ -74,7 +87,7 @@ export default function NameInputPage() {
                 </Form.Group>
                 {error && <p className="text-danger mt-2">{error}</p>}
                 <div className="text-center mt-4">
-                  <Button type="submit" className="btn-wondr">Lanjutkan</Button>
+                  <Button type="submit" className="btn-wondr" disabled={!name || error}>Lanjutkan</Button>
                 </div>
               </Form>
             </Col>

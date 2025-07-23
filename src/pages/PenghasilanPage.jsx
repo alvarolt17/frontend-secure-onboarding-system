@@ -1,12 +1,13 @@
 // src/pages/PenghasilanPage.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import logo from '../assets/wondr-logo.png';
 import incomeImg from '../assets/sumber-penghasilan.png';
 import { useFormData } from '../context/formContext'; // pastikan hook tersedia
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 const incomeOptions = [
   'Gaji',
@@ -19,6 +20,14 @@ export default function PenghasilanPage() {
   const [selectedIncome, setSelectedIncome] = useState('');
   const { updateForm } = useFormData();  // gunakan context updateForm
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/penghasilan')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,6 +38,7 @@ export default function PenghasilanPage() {
     });
 
     console.log('Sumber Penghasilan saved:', selectedIncome);
+    completeStep('penghasilanDone'); // Tandai langkah ini selesai
 
     // Lanjut ke halaman berikutnya
     navigate('/jumlahGaji');

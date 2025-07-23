@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useFormData } from '../context/formContext';    // ✅
 import { useNavigate } from 'react-router-dom';           // ✅
 import logo from '../assets/wondr-logo.png';
 import guardianImg from '../assets/wali.png';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 const guardianOptions = ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Bibi', 'Paman','Kakek', 'Nenek'];
 
@@ -12,6 +13,14 @@ export default function WaliPage() {
   const [selectedGuardian, setSelectedGuardian] = useState('');
   const { updateForm } = useFormData();       // ✅
   const navigate = useNavigate();            // ✅
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/wali')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +28,7 @@ export default function WaliPage() {
 
     updateForm({ jenisWali: selectedGuardian });   // ✍️ Simpan ke context
     console.log('Wali yang dipilih:', selectedGuardian);
+    completeStep('waliInfoDone'); // Tandai langkah ini selesai
     navigate('/identitasWali');                    // ➡️ Navigasi
   };
 

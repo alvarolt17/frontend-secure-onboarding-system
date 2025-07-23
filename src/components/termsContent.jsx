@@ -60,8 +60,8 @@ const TermsContentComponent = () => (
 
 
 // Langkah 3: Buat kembali objek 'termsText' dan ekspor sebagai default
-const termsText = {
-  content: <TermsContentComponent />
-};
-
-export default termsText;
+// const termsText = {
+//   content: <TermsContentComponent />
+// };
+// export default termsText;
+export default TermsContentComponent;

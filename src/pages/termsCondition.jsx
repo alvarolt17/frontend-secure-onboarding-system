@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import termsText from '../components/termsContent.jsx';
+// import termsText from '../components/termsContent.jsx';
+import TermsContent from '../components/termsContent.jsx';
 import logo from '../assets/police.png';
 import wondr from '../assets/wondr-logo.png';
 import styles from './termsConditions.module.css';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 const TermsCondition = () => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const { completeStep } = useRegister(); // Ambil completeStep dari context
 
   const lanjut = (e) => {
     e.preventDefault();
-    navigate('/undang');
+    if (isChecked) {
+      completeStep('termsAccepted'); // Tandai termsAccepted selesai
+      navigate('/undang');
+    }
   };
 
   return (
@@ -28,11 +34,12 @@ const TermsCondition = () => {
         <div className={styles.imageWrapper}>
           <img src={logo} alt="Ilustrasi" className={styles.imgLarge} />
         </div>
-        
+
         <div className={styles.contentWrapper}>
           <h1>Terms and Conditions</h1>
           <div className={styles.kontenTeks}>
-            {termsText.content}
+            {/* {termsText.content} */}
+            <TermsContent /> {/* Render komponen secara langsung */}
           </div>
           <div className={styles.checkboxLabel}>
             <label>

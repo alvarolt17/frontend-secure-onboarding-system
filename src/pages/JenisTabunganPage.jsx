@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 import './JenisTabunganPage.css';
 import logo from '../assets/wondr-logo.png';
 import saldoIcon from '../assets/saldo-awal.png';
@@ -16,6 +17,14 @@ import background from '../assets/background.png';
 export default function JenisTabunganPage() {
   const navigate = useNavigate();
   const { updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/tabungan')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   const tabunganList = [
     {
@@ -49,6 +58,7 @@ export default function JenisTabunganPage() {
   const handleChoose = (title, key) => {
     if (!title || !key) return;
     updateForm({ tipeAkun: title });
+    completeStep('tabunganSelected'); // Tandai tabunganSelected selesai
     navigate('/JenisKartuPage');
   };
 

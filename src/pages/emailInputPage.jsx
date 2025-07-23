@@ -6,6 +6,7 @@ import logo from '../assets/wondr-logo.png';
 import emailIcon from '../assets/email.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 import validator from 'validator';
 
 // ✂️ Sanitasi input email
@@ -26,6 +27,14 @@ export default function EmailInputPage() {
   const [touched, setTouched] = useState(false);
   const navigate = useNavigate();
   const { data, updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/email')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   useEffect(() => {
     console.log('🔍 Context formData now:', data);
@@ -52,6 +61,7 @@ export default function EmailInputPage() {
 
     updateForm({ email: sanitized });
     console.log('✅ Email tersanitasi dan valid:', sanitized);
+    completeStep('emailInputDone'); // Tandai emailInputDone selesai
     navigate('/password');
   };
 

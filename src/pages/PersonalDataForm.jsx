@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import { useFormData } from '../context/formContext';
@@ -8,10 +8,19 @@ import characterImg from '../assets/businessman.png';
 import { sanitize } from '../utils/sanitize';
 import { personalDataSchema } from '../utils/validation';
 import { useFormik } from 'formik';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 export default function PersonalDataForm() {
   const { updateForm } = useFormData();
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/personalData')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
+      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    }
+  }, [checkAndRedirect]);
 
   const formik = useFormik({
     initialValues: {
@@ -28,6 +37,7 @@ export default function PersonalDataForm() {
         agama: values.religion,
         statusPernikahan: values.maritalStatus,
       });
+      completeStep('personalDataDone'); // Tandai langkah ini selesai
       navigate('/namaIbu');
     }
   });

@@ -1,18 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
-import termsText from '../components/termsContent.jsx';
+// import termsText from '../components/termsContent.jsx'; // Tidak digunakan
 import logo from '../assets/UU PDP.png';
 import wondr from '../assets/wondr-logo.png';
 import styles from './undang.module.css';
 import { useNavigate } from 'react-router-dom';
 import filepdf from '../components/undang.pdf'
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 const Undang = () => {
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
   const [isChecked, setIsChecked] = useState({
     agreePromoInternal: false,
     agreePromoEksternal: false,
   });
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    // Panggil checkAndRedirect dengan path saat ini
+    if (!checkAndRedirect('/undang')) {
+      // Jika checkAndRedirect mengembalikan false, itu berarti sudah di-redirect
+      return;
+    }
+  }, [checkAndRedirect]); // Jalankan setiap kali checkAndRedirect berubah (termasuk saat komponen dimuat)
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -21,8 +32,14 @@ const Undang = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Data Checkbox:', isChecked);
-    navigate('/name');
+    if (isChecked.agreePromoInternal && isChecked.agreePromoEksternal) {
+      completeStep('undangAccepted'); // Tandai undangAccepted selesai
+      console.log('Data Checkbox:', isChecked);
+      navigate('/name');
+    } else {
+      // Opsional: tampilkan pesan error jika checkbox belum dicentang semua
+      alert('Anda harus menyetujui kedua persyaratan untuk melanjutkan.');
+    }
   };
 
   const isButtonEnabled = isChecked.agreePromoInternal && isChecked.agreePromoEksternal;
@@ -44,10 +61,10 @@ const Undang = () => {
         <div className={styles.contentWrapper}>
           <h1>Undang‑Undang Perlindungan Data Pribadi</h1>
           <div className={styles.kontenTeks}>
-            <iframe 
+            <iframe
             src={filepdf} // Path ke file di folder public
-            width="100%" 
-            height="100%" 
+            width="100%"
+            height="100%"
             title="Dokumen UU PDP"
             style={{ border: 'none' }}
           ></iframe>
@@ -73,7 +90,8 @@ const Undang = () => {
             />
             <button
               type="submit"
-              className={styles.button}
+              className={isButtonEnabled ? styles.button : styles.buttonDisabled} // Pastikan tombol dinonaktifkan jika belum memenuhi syarat
+              disabled={!isButtonEnabled}
             >
               Lanjutkan
             </button>

@@ -1,5 +1,5 @@
 // src/pages/MotherNamePage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -13,6 +13,7 @@ import momImage from '../assets/Ibu-kandung.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
 import './MotherName.css'
+import { useRegister } from '../context/RegisterContext';
 
 // Utility function to sanitize input
 function sanitizeInput(str) {
@@ -23,14 +24,58 @@ export default function MotherNamePage() {
   const [motherName, setMotherName] = useState('');
   const navigate = useNavigate();
   const { updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister();
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    // Panggil checkAndRedirect saat komponen dimuat
+    // Ini akan mengarahkan kembali jika prasyarat belum terpenuhi
+    if (!checkAndRedirect('/namaIbu')) {
+      return;
+    }
+    // Jika tidak ada redirect, kita bisa memuat data dari formContext jika ada
+    // Ini penting jika pengguna kembali ke halaman ini (misalnya dari tombol back browser)
+    // const storedData = // Anda bisa menambahkan logika untuk memuat dari formContext.data jika diperlukan
+    // if (storedData.namaIbuKandung) {
+    //   setMotherName(storedData.namaIbuKandung);
+    // }
+  }, [checkAndRedirect]);
 
   const sanitized = sanitizeInput(motherName);
   const isValid = sanitized.length > 0;
 
-  const handleSubmit = e => {
+  // --- DEBUGGING LOGS ---
+  useEffect(() => {
+    console.log('MotherNamePage State Update:');
+    console.log('  motherName (raw):', motherName);
+    console.log('  sanitized:', sanitized);
+    console.log('  isValid:', isValid);
+    console.log('  Is button disabled:', !isValid);
+  }, [motherName, sanitized, isValid]);
+  // --- END DEBUGGING LOGS ---
+
+  const handleSubmit = async e => { // <-- Jadikan async
     e.preventDefault();
-    if (!isValid) return;
+    console.log('handleSubmit called. isValid:', isValid);
+    if (!isValid) {
+      console.log('Form is not valid, stopping submission.');
+      return;
+    }
+
+    // Pastikan updateForm selesai sebelum menandai langkah selesai dan navigasi
+    // Meskipun updateForm dari useState tidak asinkron, ini memastikan urutan logis
     updateForm({ namaIbuKandung: sanitized });
+    console.log('Data namaIbuKandung updated in formContext.');
+
+    completeStep('motherNameDone');
+    console.log('motherNameDone marked as complete in RegisterContext.');
+
+    // Beri sedikit waktu untuk state context diperbarui di sessionStorage
+    // Ini adalah hacky workaround jika ada masalah timing dengan sessionStorage
+    // Idealnya, React Context updates should be synchronous enough for this.
+    // await new Promise(resolve => setTimeout(resolve, 50)); // Coba tambahkan delay kecil jika masalah timing persisten
+
+    console.log('Navigating to /alamat...');
     navigate('/alamat');
   };
 

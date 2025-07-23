@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // Import useEffect
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import logo from '../assets/wondr-logo.png';
@@ -6,10 +6,20 @@ import passIcon from '../assets/Password.png';
 import PasswordForm from '../components/PasswordForm';
 import './CreatePassword.css';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 
 export default function CreatePasswordPage() {
   const navigate = useNavigate();
+  const { checkAndRedirect } = useRegister(); // Ambil dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/password')) {
+      return;
+    }
+  }, [checkAndRedirect]);
+
   return (
     <div className="vh-100 d-flex flex-column bg-light">
       <header className="p-3 ps-4">
@@ -23,6 +33,7 @@ export default function CreatePasswordPage() {
               <p className="text-muted mb-4">
                 Pastikan password yang kamu buat sesuai dengan petunjuk!
               </p>
+              {/* PasswordForm perlu memanggil completeStep('passwordCreated') setelah berhasil */}
               <PasswordForm />
             </Col>
             <Col md={6} className="d-none d-md-flex justify-content-center align-items-center">

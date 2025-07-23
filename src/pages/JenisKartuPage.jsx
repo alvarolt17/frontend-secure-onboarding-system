@@ -1,8 +1,9 @@
-import React, { use } from 'react';
+import React, { useEffect } from 'react'; // Import useEffect
 import Slider from 'react-slick';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './JenisKartuPage.css';
 import { useFormData } from '../context/formContext';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 import logo from '../assets/wondr-logo.png';
 import silverCard from '../assets/kartuSilver.png';
 import goldCard from '../assets/kartuGold.png';
@@ -13,8 +14,17 @@ import { useNavigate } from 'react-router-dom';
 
 
 export default function JenisKartuPage() {
-  const { updateForm } = useFormData() ;
-  const navigate = useNavigate() ;
+  const { updateForm } = useFormData();
+  const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/JenisKartuPage')) {
+      return;
+    }
+  }, [checkAndRedirect]);
+
   const cardList = [
     {
       name: 'Silver',
@@ -109,9 +119,10 @@ export default function JenisKartuPage() {
                     </ul>
                     <div className="text-center mt-3">
                       <button className="btn btn-warning rounded-pill fw-semibold px-4 w-75 " onClick={() => {
-    updateForm({ jenisKartu: card.name });
-    navigate('/personalData') ;
-  }}>
+                        updateForm({ jenisKartu: card.name });
+                        completeStep('jenisKartuSelected'); // Tandai jenisKartuSelected selesai
+                        navigate('/personalData');
+                      }}>
                         Pilih
                       </button>
                     </div>

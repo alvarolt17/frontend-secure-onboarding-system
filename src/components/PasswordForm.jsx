@@ -3,6 +3,7 @@ import { Form, Button, ProgressBar } from 'react-bootstrap';
 import zxcvbn from 'zxcvbn';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // 🔍 Sanitasi input password: trim dan hapus karakter kontrol
 function sanitizePassword(pwd) {
@@ -17,6 +18,7 @@ export default function PasswordForm() {
 
   const { updateForm } = useFormData();
   const navigate = useNavigate();
+  const { completeStep } = useRegister(); // Ambil completeStep dari context
 
   const rules = [
     { label: 'Minimal 8 karakter', test: pwd => pwd.length >= 8 },
@@ -56,7 +58,7 @@ export default function PasswordForm() {
       errs.password = 'Password belum memenuhi semua kriteria.';
     }
     // Cek kekuatan minimal "Sedang"
-    else if (strength < 2) {
+    else if (strength < 2) { // Minimal score 2 untuk "Sedang"
       errs.password = 'Password terlalu lemah. Gunakan kombinasi huruf besar, kecil, angka, dan simbol.';
     }
 
@@ -73,6 +75,7 @@ export default function PasswordForm() {
     e.preventDefault();
     if (!validateForm()) return;
     updateForm({ password });
+    completeStep('passwordCreated'); // Tandai passwordCreated selesai
     navigate('/ktp');
   };
 

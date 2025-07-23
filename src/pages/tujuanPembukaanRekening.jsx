@@ -1,41 +1,60 @@
 // src/pages/TujuanPembukaanRekening.jsx
-import React, { useState } from 'react';
-import { Container, Row, Col, ListGroup, Button } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, ListGroup, Button, Alert } from 'react-bootstrap';
 import logo from '../assets/wondr-logo.png';
 import characterImg from '../assets/pembukaan-rekening.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
+import { useRegister } from '../context/RegisterContext';
 
 export default function TujuanPembukaanRekening() {
   const [selected, setSelected] = useState('');
+  const [loading, setLoading] = useState(false); // State untuk loading saat menyimpan
+  const [error, setError] = useState(null); // State untuk error saat menyimpan
   const options = ['Investasi', 'Tabungan', 'Transaksi'];
 
   const { updateForm, data } = useFormData();
   const navigate = useNavigate();
+  const { completeStep, checkAndRedirect } = useRegister();
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/tujuanPembukaanRekening')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    if (!selected) {
+      setError("Mohon pilih tujuan pembukaan rekening.");
+      setLoading(false);
+      return;
+    }
+
+    // Perbarui formContext dengan tujuan yang dipilih
     updateForm({ tujuanPembuatanRekening: selected });
 
+    // Bangun payload sesuai struktur yang diharapkan backend Anda
     const payload = {
       namaLengkap: data.namaLengkap || '',
       nik: data.nik || '',
       namaIbuKandung: data.namaIbuKandung || '',
+      // Pastikan nomor telepon diawali '0' untuk backend jika diperlukan
       nomorTelepon: data.nomorTelepon.startsWith('0') ? data.nomorTelepon : '0' + data.nomorTelepon,
       email: data.email || '',
       password: data.password || '',
-      tipeAkun: data.tipeAkun || '',
+      tipeAkun: data.tipeAkun || '', // Ini adalah jenis tabungan dari JenisTabunganPage
       tempatLahir: data.tempatLahir || '',
       tanggalLahir: data.tanggalLahir || '',
       jenisKelamin: data.jenisKelamin || '',
-      jenisKartu: data.jenisKartu || '',
+      jenisKartu: data.jenisKartu || '', // Ini adalah jenis kartu dari JenisKartuPage
       agama: data.agama || '',
       statusPernikahan: data.statusPernikahan || '',
-      pekerjaan: data.pekerjaan || '',
-      sumberPenghasilan: data.sumberPenghasilan || '',
-      rentangGaji: data.rentangGaji || '',
-      tujuanPembuatanRekening: selected,
-      kodeRekening: data.kodeRekening || null,
+      // ✅ Perbaiki struktur objek 'alamat'
       alamat: {
         namaAlamat: data.namaAlamat || '',
         provinsi: data.provinsi || '',
@@ -44,23 +63,35 @@ export default function TujuanPembukaanRekening() {
         kelurahan: data.kelurahan || '',
         kodePos: data.kodePos || ''
       },
+      pekerjaan: data.pekerjaan || '',
+      // ✅ Perbaiki struktur objek 'wali'
       wali: {
         jenisWali: data.jenisWali || '',
         namaLengkapWali: data.namaLengkapWali || '',
         pekerjaanWali: data.pekerjaanWali || '',
         alamatWali: data.alamatWali || '',
+        // Pastikan nomor telepon wali juga diawali '0' jika diperlukan
         nomorTeleponWali: data.nomorTeleponWali?.startsWith('0')
           ? data.nomorTeleponWali
           : '0' + (data.nomorTeleponWali || '')
-      }
+      },
+      sumberPenghasilan: data.sumberPenghasilan || '',
+      rentangGaji: data.rentangGaji || '',
+      tujuanPembuatanRekening: selected,
+      timestamp: new Date().toISOString(), // Tambahkan timestamp
     };
-    console.log('Request Payload:', payload);
+
+    console.log('Final Payload for Submission:', payload);
 
     try {
-      // ✅ Ganti URL sesuai dengan backend yang digunakan
       // ✅ Gunakan base URL dari .env
-        const baseURL = import.meta.env.VITE_BACKEND_BASE_URL; // Mendapatkan base URL dari .env
-        const response = await fetch(`${baseURL}/api/auth/register`, {      
+      const baseURL = import.meta.env.VITE_BACKEND_BASE_URL; // Mendapatkan base URL dari .env
+      if (!baseURL) {
+        throw new Error("VITE_BACKEND_BASE_URL is not defined in .env");
+      }
+
+      // ✅ Pastikan URL API yang dipanggil sesuai dengan backend Anda
+      const response = await fetch(`${baseURL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -69,28 +100,33 @@ export default function TujuanPembukaanRekening() {
       const result = await response.json();
 
       if (!response.ok) {
-        alert(result.message || 'Gagal melakukan registrasi');
-        return;
+        // Jika respons tidak OK (misalnya status 4xx atau 5xx)
+        console.error("Backend registration failed:", result);
+        setError(result.message || 'Gagal melakukan registrasi.');
+        return; // Hentikan eksekusi lebih lanjut
       }
 
-      // ✅ Simpan response ke localStorage
-      localStorage.setItem('registerSummary', JSON.stringify(result.data));
+      console.log('Pendaftaran berhasil:', result);
+      // Data tidak perlu disimpan ke localStorage lagi, karena AccountConfirmation akan mengambil dari formContext
 
-      // ✅ Arahkan ke halaman summary
-      navigate('/summary');
+      completeStep('tujuanRekeningDone'); // Tandai langkah ini selesai setelah data berhasil disimpan di backend
+      navigate('/summary'); // Arahkan ke halaman summary
     } catch (err) {
-      console.error(err);
-      alert('Terjadi kesalahan jaringan.');
+      console.error('Error saat pendaftaran:', err);
+      setError('Terjadi kesalahan jaringan atau sistem. Silakan coba lagi.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="vh-100 d-flex flex-column bg-white">
       <div className="p-3 ps-4">
-        <img src={logo} alt="logo wondr" style={{ width: '130px' }} />
+        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
       </div>
-      <div className="flex-grow-1 d-flex align-items-center justify-content-center">
-        <Container className="p-4 bg-white rounded-4 shadow" style={{ maxWidth: '1200px', width: '95vw' }}>
+
+      <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">
+        <Container className="p-4 bg-white rounded-4 shadow">
           <Row className="align-items-center">
             <Col md={6}>
               <h2 className="fw-bold">Apa tujuan kamu buka rekening?</h2>
@@ -110,8 +146,9 @@ export default function TujuanPembukaanRekening() {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
+              {error && <Alert variant="danger" className="mt-3">{error}</Alert>} {/* Tampilkan error */}
               <Button
-                disabled={!selected}
+                disabled={!selected || loading} // Nonaktifkan tombol saat loading atau belum memilih
                 onClick={handleSubmit}
                 className="mt-3"
                 style={{
@@ -122,7 +159,7 @@ export default function TujuanPembukaanRekening() {
                   width: '100%'
                 }}
               >
-                Lanjutkan
+                {loading ? 'Menyimpan...' : 'Lanjutkan'} {/* Teks loading */}
               </Button>
             </Col>
             <Col md={6} className="text-center d-none d-md-block">

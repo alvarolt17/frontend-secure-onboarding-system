@@ -7,7 +7,8 @@ import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
-import { setupRecaptcha, sendOtp } from '../firebase'; // Import fungsi Firebase
+import { setupRecaptcha, sendOtp } from '../firebase';
+import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // --- Input Sanitization and Validation Functions ---
 // 🔍 Sanitasi: hapus semua karakter non-digit, dan optional leading zeroes
@@ -30,13 +31,21 @@ function validatePhone(digits) {
 export default function PhoneInputPage() {
   const [phone, setPhone] = useState('');
   const [touched, setTouched] = useState(false);
-  const [loading, setLoading] = useState(false); // State untuk loading
-  const [error, setError] = useState(null); // State untuk error
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { data, updateForm } = useFormData();
+  const { updateForm } = useFormData(); // Tidak perlu 'data' di sini, hanya 'updateForm'
+  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
 
   // Reference for reCAPTCHA container
   const recaptchaContainerRef = React.useRef(null);
+
+  // Efek untuk memeriksa akses
+  useEffect(() => {
+    if (!checkAndRedirect('/phone')) {
+      return;
+    }
+  }, [checkAndRedirect]);
 
   // Apply sanitization to the phone input before validation
   const cleanedPhone = sanitizePhone(phone);
@@ -61,9 +70,10 @@ export default function PhoneInputPage() {
       const fullPhoneNumber = `+62${cleanedPhone}`;
       await sendOtp(fullPhoneNumber);
       updateForm({ nomorTelepon: cleanedPhone }); // Simpan nomor telepon yang sudah bersih ke context
+      completeStep('phoneInputDone'); // Tandai phoneInputDone selesai
       navigate('/otp'); // Navigasi ke halaman OTP setelah OTP terkirim
       console.log('Phone number submitted:', cleanedPhone);
-      console.log('Context data:', data);
+      // console.log('Context data:', data); // data tidak dibutuhkan di sini
     } catch (err) {
       console.error("Failed to send OTP:", err);
       // Handle spesifik error Firebase
@@ -87,9 +97,9 @@ export default function PhoneInputPage() {
     }
   }, []); // Hanya jalankan sekali saat mount
 
-  useEffect(() => {
-    console.log('Context data:', data);
-  }, [data]);
+  // useEffect(() => { // Tidak perlu log data context di sini jika tidak digunakan
+  //   console.log('Context data:', data);
+  // }, [data]);
 
   return (
     <div className="vh-100 d-flex flex-column bg-light font-poppins">
