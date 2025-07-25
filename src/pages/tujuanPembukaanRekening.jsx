@@ -57,8 +57,10 @@ export default function TujuanPembukaanRekening() {
     console.log('Request Payload:', payload);
 
     try {
-      // const response = await fetch('https://talented-julie-solely-piano.trycloudflare.com/api/auth/register', {
-        const response = await fetch('https://ventures-designed-seas-hang.trycloudflare.com/api/auth/register', {
+      // ✅ Ganti URL sesuai dengan backend yang digunakan
+      // ✅ Gunakan base URL dari .env
+        const baseURL = import.meta.env.VITE_BACKEND_BASE_URL; // Mendapatkan base URL dari .env
+        const response = await fetch(`${baseURL}/api/auth/register`, {      
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

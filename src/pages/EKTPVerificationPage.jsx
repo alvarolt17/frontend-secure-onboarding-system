@@ -74,8 +74,11 @@ export default function EKTPVerificationPage() {
 
     setLoading(true);
     try {
-      const resp = await fetch(
-        'https://hepatitis-label-ccd-similarly.trycloudflare.com/api/dukcapil/verify-nik',
+      // ✅ Gunakan base URL dari .env
+      const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL; // Mendapatkan base URL dari .env
+      //console.log(baseURL)
+      const resp = await fetch(        
+        `${baseURL}/api/dukcapil/verify-nik`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
