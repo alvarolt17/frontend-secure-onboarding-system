@@ -1,0 +1,28 @@
+/* src/pages/WaliIdentity.css */
+.btn-clear {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #757575;
+  color: white;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-clear:hover {
+  background: #5e5e5e;
+}
+
+.btn-clear:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 133, 0, 0.5);
+}
