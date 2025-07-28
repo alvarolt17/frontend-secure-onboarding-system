@@ -39,7 +39,7 @@ export default function NameInputPage() {
     e.preventDefault();
     const clean = sanitizeInput(name);
     if (!clean) {
-      setError('Nama tidak boleh kosong setelah disanitasi.');
+      setError('Nama tidak boleh kosong.');
       return;
     }
     if (!isValidName(clean)) {

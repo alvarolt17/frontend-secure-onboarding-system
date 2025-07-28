@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useFormData } from '../context/formContext';    // ✅
-import { useNavigate } from 'react-router-dom';           // ✅
+import { useFormData } from '../context/formContext';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/wondr-logo.png';
 import guardianImg from '../assets/wali.png';
 import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
-const guardianOptions = ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Bibi', 'Paman','Kakek', 'Nenek'];
+// List of allowed guardian options
+const guardianOptions = ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Bibi', 'Paman', 'Kakek', 'Nenek'];
+
+// Simple sanitization: trim, remove non-alphanumeric and accent chars just in case
+function sanitizeGuardian(input) {
+  return input.trim().replace(/[^\wÀ-ÿ ]/g, '');
+}
 
 export default function WaliPage() {
   const [selectedGuardian, setSelectedGuardian] = useState('');
@@ -22,11 +28,19 @@ export default function WaliPage() {
     }
   }, [checkAndRedirect]);
 
-  const handleSubmit = (e) => {
+  const handleSelect = option => {
+    // Sanitize before setting
+    const clean = sanitizeGuardian(option);
+    if (guardianOptions.includes(clean)) {
+      setSelectedGuardian(clean);
+    }
+  };
+
+  const handleSubmit = e => {
     e.preventDefault();
     if (!selectedGuardian) return;
 
-    updateForm({ jenisWali: selectedGuardian });   // ✍️ Simpan ke context
+    updateForm({ jenisWali: selectedGuardian });
     console.log('Wali yang dipilih:', selectedGuardian);
     completeStep('waliInfoDone'); // Tandai langkah ini selesai
     navigate('/identitasWali');                    // ➡️ Navigasi
@@ -34,10 +48,10 @@ export default function WaliPage() {
 
   return (
     <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
-      <div className="p-3 ps-4">
+      <header className="p-3 ps-4">
         <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
-      </div>
-      <div className="flex-grow-1 d-flex align-items-center justify-content-center">
+      </header>
+      <main className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 bg-white rounded-4 shadow" style={{ maxWidth: '1200px', width: '95vw' }}>
           <Row className="align-items-center">
             <Col md={6}>
@@ -45,11 +59,12 @@ export default function WaliPage() {
               <p className="text-muted mb-4">Wali adalah orang yang bertanggung jawab atas diri kamu.</p>
 
               {guardianOptions.map((option, idx) => {
-                const isSelected = selectedGuardian === option;
+                const clean = sanitizeGuardian(option);
+                const isSelected = selectedGuardian === clean;
                 return (
                   <Button
                     key={idx}
-                    onClick={() => setSelectedGuardian(option)}
+                    onClick={() => handleSelect(option)}
                     className="mb-3 w-100 text-start rounded-3"
                     style={{
                       border: '2px solid #FFA500',
@@ -60,7 +75,7 @@ export default function WaliPage() {
                     variant="link"
                     size="lg"
                   >
-                    {option}
+                    {clean}
                   </Button>
                 );
               })}
@@ -87,7 +102,7 @@ export default function WaliPage() {
             </Col>
           </Row>
         </Container>
-      </div>
+      </main>
     </div>
   );
 }

@@ -1,8 +1,25 @@
-# Stage 1: Build aplikasi
-FROM node:18-alpine AS build
+# Stage Pertama: Build Aplikasi Frontend
+# Gunakan base image Node.js yang sesuai (misalnya Node.js 20)
+FROM node:20-alpine AS build
+
+# Set working directory
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+
+# Copy package.json dan package-lock.json (jika ada) terlebih dahulu.
+# Ini memanfaatkan Docker layer caching: jika file-file ini tidak berubah,
+# npm install tidak akan dijalankan ulang di build berikutnya, mempercepat proses.
+# Karena Dockerfile ini berada di dalam folder frontend-secure-onboarding-system,
+# jalur COPY sekarang relatif terhadap folder tersebut.
+COPY package.json ./
+COPY package-lock.json ./
+
+# Install dependensi
+RUN npm install
+
+# Copy seluruh source code frontend
+# Pastikan semua file proyek (termasuk public, src, dll.) disalin setelah dependensi diinstal.
+# Karena Dockerfile ini berada di dalam folder frontend-secure-onboarding-system,
+# jalur COPY sekarang relatif terhadap folder tersebut.
 COPY . .
 
 # Gunakan ARG untuk menerima nilai VITE_BACKEND_BASE_URL dan VITE_VERIFICATOR_BASE_URL saat build
