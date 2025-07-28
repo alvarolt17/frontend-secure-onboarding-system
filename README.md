@@ -1,5 +1,16 @@
 # React + Vite
 
+## Membuat Docker image & Push
+
+> Jangan lupa berikan `VITE_BACKEND_BASE_URL` dan `VITE_VERIFICATOR_BASE_URL` sebagai _build arguments_.
+
+```bash
+docker build \
+  --build-arg VITE_BACKEND_BASE_URL=http://wondr.desktop.com \
+  --build-arg VITE_VERIFICATOR_BASE_URL=http://wondr.desktop.com \
+  -t bostang/secure-onboarding-system-frontend:latest ./frontend-secure-onboarding-system
+```
+
 ## Environment Variable untuk FirebaseConfig
 
 buat `.env` sebagai berikut:

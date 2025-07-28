@@ -52,6 +52,12 @@ ENTRYPOINT ["nginx", "-g", "daemon off;"]
 #   --build-arg VITE_VERIFICATOR_BASE_URL=http://verifikator-service:8081 \
 #   -t bostang/secure-onboarding-system-frontend:latest /direktori/proyek/frontend-secure-onboarding-system
 
+# PENGUJIAN PADA MINIKUBE LOCAL
+# docker build \
+#   --build-arg VITE_BACKEND_BASE_URL=http://wondr.desktop.com \
+#   --build-arg VITE_VERIFICATOR_BASE_URL=http://wondr.desktop.com \
+#   -t bostang/secure-onboarding-system-frontend:latest ./frontend-secure-onboarding-system
+
 
 #### SEBELUM MENGGUNAKAN ARG UNTUK URL VITE
 # # Stage 1: Build aplikasi
