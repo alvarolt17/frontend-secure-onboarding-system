@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types'; // ✅ Tambahkan ini
 
 const FormDataContext = createContext();
 
@@ -30,7 +31,8 @@ const initialState = {
   namaLengkapWali: '',
   pekerjaanWali: '',
   alamatWali: '',
-  nomorTeleponWali: ''
+  nomorTeleponWali: '',
+  umur: ''
 };
 
 export function FormProvider({ children }) {
@@ -40,7 +42,9 @@ export function FormProvider({ children }) {
     setData(prev => ({ ...prev, ...newValues }));
   };
 
-  useEffect(() => console.log('🔁 Context data sekarang:', data), [data]);
+  useEffect(() => {
+    console.log('🔁 Context data sekarang:', data);
+  }, [data]);
 
   return (
     <FormDataContext.Provider value={{ data, updateForm }}>
@@ -48,6 +52,11 @@ export function FormProvider({ children }) {
     </FormDataContext.Provider>
   );
 }
+
+// ✅ Tambahkan validasi props
+FormProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export function useFormData() {
   const ctx = useContext(FormDataContext);

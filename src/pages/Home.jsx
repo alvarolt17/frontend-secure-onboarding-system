@@ -6,14 +6,10 @@ import { FaGooglePlay, FaApple } from 'react-icons/fa';
 import logo from '../assets/wondr.png';
 import background from '../assets/LandingPageNew.png';
 import './Home.css';
-import { useNavigate } from 'react-router-dom';
 
 
 export default function Home() {
   const [expanded, setExpanded] = useState(false);
-  const navigate = useNavigate();
-
-  const handleRegister = () => navigate('/terms');
   const openExternal = url => window.open(url, '_blank', 'noopener,noreferrer');
 
   return (

@@ -1,35 +1,32 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import termsText from '../components/termsContent.jsx';
 import TermsContent from '../components/termsContent.jsx';
 import logo from '../assets/police.png';
 import wondr from '../assets/wondr-logo.png';
 import styles from './termsConditions.module.css';
-import { useRegister } from '../context/RegisterContext'; // Import useRegister
+import { useRegister } from '../context/RegisterContext';
 
 const TermsCondition = () => {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
-  const { completeStep } = useRegister(); // Ambil completeStep dari context
+  const { completeStep } = useRegister();
 
   const lanjut = (e) => {
     e.preventDefault();
     if (isChecked) {
-      completeStep('termsAccepted'); // Tandai termsAccepted selesai
+      completeStep('termsAccepted');
       navigate('/undang');
     }
   };
 
   return (
     <div className={styles.page}>
-      {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <img src={wondr} alt="Wondr Logo" className={styles.headerIcon} />
         </div>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className={styles.container}>
         <div className={styles.imageWrapper}>
           <img src={logo} alt="Ilustrasi" className={styles.imgLarge} />
@@ -38,9 +35,9 @@ const TermsCondition = () => {
         <div className={styles.contentWrapper}>
           <h1>Terms and Conditions</h1>
           <div className={styles.kontenTeks}>
-            {/* {termsText.content} */}
-            <TermsContent /> {/* Render komponen secara langsung */}
+            <TermsContent />
           </div>
+
           <div className={styles.checkboxLabel}>
             <label>
               <input
@@ -51,7 +48,8 @@ const TermsCondition = () => {
               Saya sudah memahami dan menyetujui syarat dan ketentuan di atas
             </label>
           </div>
-          <div>
+
+          <div className={styles.buttonWrapper}>
             <button
               onClick={lanjut}
               disabled={!isChecked}
