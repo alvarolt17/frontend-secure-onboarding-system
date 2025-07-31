@@ -85,11 +85,17 @@ export default function EKTPVerificationPage() {
 
     setLoading(true);
     try {
-      const resp = await fetch(`https://naval-layers-spencer-interview.trycloudflare.com/api/dukcapil/verify-nik`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
-      });
+      // ✅ Gunakan base URL dari .env
+      const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL; // Mendapatkan base URL dari .env
+      //console.log(baseURL)
+      const resp = await fetch(
+        `${baseURL}/api/dukcapil/verify-nik`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
+        }
+      );
 
       const data = await resp.json();
       console.log('Dukcapil response:', data);
