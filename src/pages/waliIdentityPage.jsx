@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react'; // <-- Tambahkan useMemo di sini
+import React, { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './WaliIdentity.css'; // styling clear button
+import './WaliIdentity.css';
 import logo from '../assets/wondr-logo.png';
 import guardianImg from '../assets/Guardian.png';
 import { useFormData } from '../context/formContext';
@@ -10,7 +10,7 @@ import { useRegister } from '../context/RegisterContext';
 
 // Sanitasi input: trim & bersihkan simbol rawan
 function sanitizeText(str) {
-  return str.trim().replace(/[\x00-\x1F\x7F]|['";\\/]/g, '');
+  return str.trim().replace(/['";\\/]+/g, '');
 }
 
 // Hanya digit untuk telepon
@@ -20,12 +20,16 @@ function sanitizePhone(str) {
 
 export default function WaliIdentityPage() {
   const [data, setData] = useState({
-    fullName: '', job: '', address: '', phone: ''
+    fullName: '',
+    job: '',
+    address: '',
+    phone: ''
   });
+
   const [errors, setErrors] = useState({});
   const { updateForm } = useFormData();
   const navigate = useNavigate();
-  const { completeStep, checkAndRedirect } = useRegister();
+  const { checkAndRedirect, completeStep } = useRegister(); // ✅ Tambahkan completeStep
 
   useEffect(() => {
     if (!checkAndRedirect('/identitasWali')) {
@@ -56,7 +60,6 @@ export default function WaliIdentityPage() {
     return errs;
   };
 
-  // Validasi sederhana untuk semua field
   const validateForm = () => {
     let newErrors = {};
     let isValid = true;
@@ -66,44 +69,28 @@ export default function WaliIdentityPage() {
         isValid = false;
       }
     }
-    // Validasi nomor telepon lebih spesifik
     if (data.phone.trim() !== '' && !/^\d{8,15}$/.test(data.phone.trim())) {
       newErrors.phone = 'Nomor HP tidak valid (hanya angka, 8-15 digit).';
       isValid = false;
     }
-
-    // Hanya update errors state jika ada perubahan signifikan
     if (JSON.stringify(newErrors) !== JSON.stringify(errors)) {
       setErrors(newErrors);
     }
     return isValid;
   };
 
-  // Pindahkan validasi yang tidak memicu state update untuk status tombol
   const isFormTrulyValid = useMemo(() => {
-    // Ini adalah validasi yang sama dengan validateForm, tetapi tanpa setErrors
-    // Ini hanya untuk menentukan status tombol 'disabled'
     for (const key in data) {
       if (data[key].trim() === '') return false;
     }
     if (data.phone.trim() !== '' && !/^\d{8,15}$/.test(data.phone.trim())) return false;
     return true;
-  }, [data]); // Dependensi hanya pada 'data'
-
-  // --- DEBUGGING LOGS ---
-  useEffect(() => {
-    console.log('WaliIdentityPage State Update:');
-    console.log('  Current data:', data);
-    console.log('  Current errors:', errors);
-    console.log('  Is form valid for button (derived):', isFormTrulyValid);
-  }, [data, errors, isFormTrulyValid]);
-  // --- END DEBUGGING LOGS ---
+  }, [data]);
 
   const handleSubmit = async e => {
     e.preventDefault();
     console.log('handleSubmit called in WaliIdentityPage.');
 
-    // Panggil validateForm untuk memperbarui state errors dan mendapatkan status validitas
     if (!validateForm()) {
       console.log('Form is not valid, stopping submission.');
       return;
@@ -129,6 +116,7 @@ export default function WaliIdentityPage() {
       nomorTeleponWali: clean.phone
     });
 
+    completeStep('waliIdentityDone'); // ✅ Tambahkan step selesai
     console.log('Navigating to /penghasilan...');
     navigate('/penghasilan');
   };
@@ -156,7 +144,9 @@ export default function WaliIdentityPage() {
             ×
           </button>
         )}
-        <Form.Control.Feedback type="invalid">{errors[name]}</Form.Control.Feedback>
+        <Form.Control.Feedback type="invalid">
+          {errors[name]}
+        </Form.Control.Feedback>
       </div>
     </Form.Group>
   );
@@ -188,7 +178,12 @@ export default function WaliIdentityPage() {
               </Form>
             </Col>
             <Col md={6} className="d-none d-md-flex justify-content-end">
-              <img src={guardianImg} alt="Guardian Illustration" className="img-fluid" style={{ maxHeight: 500, objectFit: 'contain' }} />
+              <img
+                src={guardianImg}
+                alt="Guardian Illustration"
+                className="img-fluid"
+                style={{ maxHeight: 500, objectFit: 'contain' }}
+              />
             </Col>
           </Row>
         </Container>

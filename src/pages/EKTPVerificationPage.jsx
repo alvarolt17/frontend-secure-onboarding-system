@@ -1,6 +1,6 @@
 // src/pages/EKTPVerificationPage.jsx
 
-import React, { useState, useEffect } from 'react'; // Import useEffect
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './EKTPVerification.css';
@@ -8,29 +8,43 @@ import logo from '../assets/wondr-logo.png';
 import ktpIcon from '../assets/KTP.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
-import { useRegister } from '../context/RegisterContext'; // Import useRegister
+import { useRegister } from '../context/RegisterContext';
 
-// Fungsi sanitasi NIK: hanya digit, ambil max 16
+// Fungsi sanitasi NIK: hanya digit, max 16
 function sanitizeNik(input) {
   return input.replace(/\D/g, '').slice(0, 16);
 }
 
-// Fungsi sanitasi nama lengkap: trim di akhir, hapus kontrol, batasi karakter
+// Fungsi sanitasi nama lengkap
 function sanitizeNama(input) {
   return input
-    .normalize('NFD') // Untuk huruf beraksen tetap konsisten
-    .replace(/[\x00-\x1F\x7F]/g, '') // Hapus karakter kontrol
-    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, '') // Izinkan huruf, spasi, dash, apostrof
-    .trim(); // Trim baik di awal dan akhir
+    .normalize('NFD')
+    .split('')                          // Ubah jadi array karakter
+    .filter(ch => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127) // Hapus karakter kontrol
+    .join('')
+    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, '')
+    .trim();
 }
 
-// Fungsi sanitasi tanggal lahir: format YYYY-MM-DD, tidak boleh di masa depan
+// Fungsi sanitasi tanggal
 function sanitizeTanggal(input) {
   const today = new Date().toISOString().split('T')[0];
   if (input.match(/^\d{4}-\d{2}-\d{2}$/) && input <= today) {
     return input;
   }
   return '';
+}
+
+// 🔢 Fungsi hitung umur dari tanggal lahir
+function hitungUmur(tanggalLahir) {
+  const today = new Date();
+  const birthDate = new Date(tanggalLahir);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
 }
 
 export default function EKTPVerificationPage() {
@@ -41,12 +55,11 @@ export default function EKTPVerificationPage() {
   const maxNik = 16;
   const navigate = useNavigate();
   const { updateForm } = useFormData();
-  const { completeStep, checkAndRedirect } = useRegister(); // Ambil completeStep dan checkAndRedirect dari context
+  const { completeStep, checkAndRedirect } = useRegister();
 
-  // Efek untuk memeriksa akses
   useEffect(() => {
-    if (!checkAndRedirect('/ktp')) { // Pastikan path sesuai dengan yang ada di pathMap di RegisterContext
-      return; // Sudah di-redirect, tidak perlu melanjutkan render atau logika lain
+    if (!checkAndRedirect('/ktp')) {
+      return;
     }
   }, [checkAndRedirect]);
 
@@ -54,23 +67,10 @@ export default function EKTPVerificationPage() {
   const isNamaValid = namaLengkap.trim().length > 0;
   const isTanggalValid = tanggalLahir !== '';
 
-  const handleNikChange = e => {
-    setNik(sanitizeNik(e.target.value));
-  };
-
-  const handleNamaChange = e => {
-    // Terima apa adanya saat mengetik
-    setNamaLengkap(e.target.value);
-  };
-
-  const handleNamaBlur = e => {
-    // Sanitasi setelah selesai mengetik
-    setNamaLengkap(sanitizeNama(e.target.value));
-  };
-
-  const handleTanggalChange = e => {
-    setTanggalLahir(sanitizeTanggal(e.target.value));
-  };
+  const handleNikChange = e => setNik(sanitizeNik(e.target.value));
+  const handleNamaChange = e => setNamaLengkap(e.target.value);
+  const handleNamaBlur = e => setNamaLengkap(sanitizeNama(e.target.value));
+  const handleTanggalChange = e => setTanggalLahir(sanitizeTanggal(e.target.value));
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -79,26 +79,23 @@ export default function EKTPVerificationPage() {
       return;
     }
 
-    updateForm({ nik, namaLengkap, tanggalLahir });
+    const umur = hitungUmur(tanggalLahir); // ✅ Hitung umur
+
+    updateForm({ nik, namaLengkap, tanggalLahir, umur }); // ✅ Simpan umur
 
     setLoading(true);
     try {
-      // ✅ Gunakan base URL dari .env
-      const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL; // Mendapatkan base URL dari .env
-      //console.log(baseURL)
-      const resp = await fetch(
-        `${baseURL}/api/dukcapil/verify-nik`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
-        }
-      );
+      const resp = await fetch(`https://naval-layers-spencer-interview.trycloudflare.com/api/dukcapil/verify-nik`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
+      });
+
       const data = await resp.json();
       console.log('Dukcapil response:', data);
       if (resp.ok && data.valid) {
         alert('Verifikasi berhasil!');
-        completeStep('ktpVerified'); // Tandai langkah ini selesai
+        completeStep('ktpVerified');
         navigate('/tabungan');
       } else {
         alert('❌ ' + (data.message || 'Verifikasi gagal.'));
@@ -190,7 +187,6 @@ export default function EKTPVerificationPage() {
                     </Button>
                   </div>
                 </Form>
-
               </div>
             </Col>
           </Row>

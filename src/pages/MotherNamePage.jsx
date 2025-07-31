@@ -12,12 +12,12 @@ import logo from '../assets/wondr-logo.png';
 import momImage from '../assets/Ibu-kandung.png';
 import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
-import './MotherName.css'
+import './MotherName.css';
 import { useRegister } from '../context/RegisterContext';
 
 // Utility function to sanitize input
 function sanitizeInput(str) {
-  return str.replace(/['";\-\/\\]/g, '').trim();
+  return str.replace(/[^\w\s]/g, '').trim();
 }
 
 export default function MotherNamePage() {

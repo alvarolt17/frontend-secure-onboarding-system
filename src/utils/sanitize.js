@@ -1,6 +1,6 @@
 
 export const sanitize = str =>
-  str.replace(/['";\-]{1,}/g, '').trim();
+  str.replace(/['";-]+/g, '').trim();
 
 // src/utils/validation.js
 import * as Yup from 'yup';

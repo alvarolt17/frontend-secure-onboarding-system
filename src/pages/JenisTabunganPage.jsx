@@ -55,12 +55,18 @@ export default function JenisTabunganPage() {
     }
   ];
 
-  const handleChoose = (title, key) => {
-    if (!title || !key) return;
-    updateForm({ tipeAkun: title });
-    completeStep('tabunganSelected'); // Tandai tabunganSelected selesai
+ const handleChoose = (title, key) => {
+  if (!title || !key) return;
+  updateForm({ tipeAkun: title });
+  completeStep('tabunganSelected'); // Tandai tabunganSelected selesai
+
+  if (title === 'BNI Taplus Muda') {
+    navigate('/personalData');
+  } else {
     navigate('/JenisKartuPage');
-  };
+  }
+};
+
 
   return (
     <div className="jenis-tabungan-page d-flex flex-column min-vh-100 bg-light">

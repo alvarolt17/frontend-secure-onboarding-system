@@ -13,8 +13,13 @@ import { useRegister } from '../context/RegisterContext'; // Import useRegister
 function sanitizeField(str) {
   return str
     .trim()
-    .replace(/[\x00-\x1F\x7F]/g, '')           // hapus karakter kontrol
-    .replace(/['";\\/]/g, '');                // buang karakter potensial injeksi
+    .split('')
+    .filter(char => {
+      const code = char.charCodeAt(0);
+      return code >= 32 && code !== 127; 
+    })
+    .join('')
+    .replace(/['";\\/]/g, ''); 
 }
 
 // ✅ Validasi: whitelist huruf, angka, spasi & teks unicode umum

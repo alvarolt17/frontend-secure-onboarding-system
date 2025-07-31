@@ -7,7 +7,14 @@ import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // 🔍 Sanitasi input password: trim dan hapus karakter kontrol
 function sanitizePassword(pwd) {
-  return pwd.trim().replace(/[\x00-\x1F\x7F]/g, '');
+  return pwd
+    .trim()
+    .split('')
+    .filter(char => {
+      const code = char.charCodeAt(0);
+      return (code >= 32 && code !== 127); // 32 is space, 127 is DEL
+    })
+    .join('');
 }
 
 export default function PasswordForm() {
