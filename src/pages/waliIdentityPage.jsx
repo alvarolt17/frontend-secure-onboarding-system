@@ -8,7 +8,7 @@ import { useFormData } from '../context/formContext';
 import { useNavigate } from 'react-router-dom';
 import { useRegister } from '../context/RegisterContext';
 
-// Sanitasi input: trim & bersihkan simbol rawan (tanpa control character)
+// Sanitasi input: trim & bersihkan simbol rawan
 function sanitizeText(str) {
   return str.trim().replace(/['";\\/]+/g, '');
 }
@@ -29,7 +29,7 @@ export default function WaliIdentityPage() {
   const [errors, setErrors] = useState({});
   const { updateForm } = useFormData();
   const navigate = useNavigate();
-  const { checkAndRedirect } = useRegister(); // ✅ hanya pakai checkAndRedirect
+  const { checkAndRedirect, completeStep } = useRegister(); // ✅ Tambahkan completeStep
 
   useEffect(() => {
     if (!checkAndRedirect('/identitasWali')) {
@@ -87,13 +87,6 @@ export default function WaliIdentityPage() {
     return true;
   }, [data]);
 
-  useEffect(() => {
-    console.log('WaliIdentityPage State Update:');
-    console.log('  Current data:', data);
-    console.log('  Current errors:', errors);
-    console.log('  Is form valid for button (derived):', isFormTrulyValid);
-  }, [data, errors, isFormTrulyValid]);
-
   const handleSubmit = async e => {
     e.preventDefault();
     console.log('handleSubmit called in WaliIdentityPage.');
@@ -123,6 +116,7 @@ export default function WaliIdentityPage() {
       nomorTeleponWali: clean.phone
     });
 
+    completeStep('waliIdentityDone'); // ✅ Tambahkan step selesai
     console.log('Navigating to /penghasilan...');
     navigate('/penghasilan');
   };

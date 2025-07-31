@@ -85,7 +85,7 @@ export default function EKTPVerificationPage() {
 
     setLoading(true);
     try {
-      const resp = await fetch(`https://citizen-disclose-assessed-tsunami.trycloudflare.com/api/dukcapil/verify-nik`, {
+      const resp = await fetch(`https://naval-layers-spencer-interview.trycloudflare.com/api/dukcapil/verify-nik`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
