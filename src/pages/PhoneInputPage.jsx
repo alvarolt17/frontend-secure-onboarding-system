@@ -7,7 +7,8 @@ import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
-import { setupRecaptcha, sendOtp } from '../firebase';
+// import { setupRecaptcha, sendOtp } from '../firebase';
+import { sendOtp } from '../firebase';
 import { useRegister } from '../context/RegisterContext'; // Import useRegister
 
 // --- Input Sanitization and Validation Functions ---
