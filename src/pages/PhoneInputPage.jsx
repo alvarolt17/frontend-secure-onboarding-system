@@ -1,3 +1,5 @@
+// src/pages/PhoneInputPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button, InputGroup, Alert } from 'react-bootstrap';
@@ -7,24 +9,17 @@ import phoneIcon from '../assets/handphone.png';
 import indonesiaFlag from '../assets/flag.png';
 import { useNavigate } from 'react-router-dom';
 import { useFormData } from '../context/formContext';
-// import { setupRecaptcha, sendOtp } from '../firebase';
-import { sendOtp } from '../firebase';
-import { useRegister } from '../context/RegisterContext'; // Import useRegister
+import { sendOtp } from '../firebase'; // Import sendOtp saja, setupRecaptcha sudah dihapus
+import { useRegister } from '../context/RegisterContext';
 
 // --- Input Sanitization and Validation Functions ---
-// 🔍 Sanitasi: hapus semua karakter non-digit, dan optional leading zeroes
 function sanitizePhone(raw) {
-  // Ambil hanya digit
   let digits = raw.replace(/\D/g, '');
-  // Hilangkan leading zeros (jika ada)
   digits = digits.replace(/^0+/, '');
   return digits;
 }
 
-// ✅ Validasi: sesuai format Indonesia (8–12 digit setelah +62)
 function validatePhone(digits) {
-  // Adjusted regex to match the previous OTP implementation's validation range
-  // It now allows 8 to 12 digits after +62, starting with 1-9 (no leading zero)
   return /^[1-9][0-9]{7,11}$/.test(digits);
 }
 // --- End Input Sanitization and Validation Functions ---
@@ -35,20 +30,19 @@ export default function PhoneInputPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { updateForm } = useFormData(); // Tidak perlu 'data' di sini, hanya 'updateForm'
-  const { completeStep, checkAndRedirect } = useRegister(); // Ambil dari context
+  const { updateForm } = useFormData();
+  const { completeStep, checkAndRedirect } = useRegister();
 
-  // Reference for reCAPTCHA container
-  const recaptchaContainerRef = React.useRef(null);
+  // Kita tidak lagi memerlukan ref ini karena recaptcha sekarang diinisialisasi
+  // langsung di dalam fungsi sendOtp
+  // const recaptchaContainerRef = React.useRef(null);
 
-  // Efek untuk memeriksa akses
   useEffect(() => {
     if (!checkAndRedirect('/phone')) {
       return;
     }
   }, [checkAndRedirect]);
 
-  // Apply sanitization to the phone input before validation
   const cleanedPhone = sanitizePhone(phone);
   const isValid = validatePhone(cleanedPhone);
 
@@ -63,21 +57,21 @@ export default function PhoneInputPage() {
     if (!isValid) return;
 
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
 
     try {
-      // Format nomor telepon ke format internasional E.164 (+62xxxxxxxxxx)
-      // Use the cleanedPhone for sending OTP as it's already sanitized and validated
       const fullPhoneNumber = `+62${cleanedPhone}`;
-      await sendOtp(fullPhoneNumber);
-      updateForm({ nomorTelepon: cleanedPhone }); // Simpan nomor telepon yang sudah bersih ke context
-      completeStep('phoneInputDone'); // Tandai phoneInputDone selesai
-      navigate('/otp'); // Navigasi ke halaman OTP setelah OTP terkirim
+
+      // Panggil sendOtp dengan nomor telepon dan ID dari elemen reCAPTCHA
+      // ID elemen ini harus ada di JSX di bawah
+      await sendOtp(fullPhoneNumber, 'recaptcha-container');
+
+      updateForm({ nomorTelepon: cleanedPhone });
+      completeStep('phoneInputDone');
+      navigate('/otp');
       console.log('Phone number submitted:', cleanedPhone);
-      // console.log('Context data:', data); // data tidak dibutuhkan di sini
     } catch (err) {
       console.error("Failed to send OTP:", err);
-      // Handle spesifik error Firebase
       if (err.code === 'auth/too-many-requests') {
         setError('Terlalu banyak percobaan. Harap coba lagi nanti.');
       } else if (err.code === 'auth/invalid-phone-number') {
@@ -90,17 +84,13 @@ export default function PhoneInputPage() {
     }
   };
 
-  useEffect(() => {
-    // Inisialisasi reCAPTCHA saat komponen dimuat
-    // Gunakan elemen div yang akan kita buat di render()
-    if (recaptchaContainerRef.current) {
-      setupRecaptcha(recaptchaContainerRef.current.id);
-    }
-  }, []); // Hanya jalankan sekali saat mount
-
-  // useEffect(() => { // Tidak perlu log data context di sini jika tidak digunakan
-  //   console.log('Context data:', data);
-  // }, [data]);
+  // Hapus seluruh useEffect yang memanggil setupRecaptcha,
+  // karena sekarang logika reCAPTCHA ada di firebase.js
+  // useEffect(() => {
+  //   if (recaptchaContainerRef.current) {
+  //     setupRecaptcha(recaptchaContainerRef.current.id);
+  //   }
+  // }, []);
 
   return (
     <div className="vh-100 d-flex flex-column bg-light font-poppins">
@@ -141,7 +131,7 @@ export default function PhoneInputPage() {
                       Masukkan 8–12 digit nomor aktif (tanpa 0 pertama).
                     </Form.Control.Feedback>
                   )}
-                  {error && ( // Tampilkan error jika ada
+                  {error && (
                     <Alert variant="danger" className="mt-3">
                       {error}
                     </Alert>
@@ -152,14 +142,15 @@ export default function PhoneInputPage() {
                   <Button
                     type="submit"
                     className="btn-wondr px-5 py-2 rounded-pill fw-bold"
-                    disabled={!isValid || loading} // Disable tombol saat loading
+                    disabled={!isValid || loading}
                   >
                     {loading ? 'Mengirim...' : 'Lanjutkan'}
                   </Button>
                 </div>
               </Form>
-              {/* Ini adalah elemen div tempat reCAPTCHA invisible akan dirender */}
-              <div id="recaptcha-container" ref={recaptchaContainerRef}></div>
+              {/* Elemen div untuk reCAPTCHA */}
+              {/* Ref dihapus karena sudah tidak digunakan */}
+              <div id="recaptcha-container"></div>
             </Col>
           </Row>
         </Container>
