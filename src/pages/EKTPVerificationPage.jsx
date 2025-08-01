@@ -19,8 +19,8 @@ function sanitizeNik(input) {
 function sanitizeNama(input) {
   return input
     .normalize('NFD')
-    .split('')                          // Ubah jadi array karakter
-    .filter(ch => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127) // Hapus karakter kontrol
+    .split('')
+    .filter(ch => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127)
     .join('')
     .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, '')
     .trim();
@@ -35,7 +35,7 @@ function sanitizeTanggal(input) {
   return '';
 }
 
-// 🔢 Fungsi hitung umur dari tanggal lahir
+// Fungsi hitung umur dari tanggal lahir
 function hitungUmur(tanggalLahir) {
   const today = new Date();
   const birthDate = new Date(tanggalLahir);
@@ -79,13 +79,14 @@ export default function EKTPVerificationPage() {
       return;
     }
 
-    const umur = hitungUmur(tanggalLahir); // ✅ Hitung umur
-
-    updateForm({ nik, namaLengkap, tanggalLahir, umur }); // ✅ Simpan umur
+    const umur = hitungUmur(tanggalLahir);
+    updateForm({ nik, namaLengkap, tanggalLahir, umur });
 
     setLoading(true);
     try {
-      const resp = await fetch(`https://naval-layers-spencer-interview.trycloudflare.com/api/dukcapil/verify-nik`, {
+      const apiUrl = import.meta.env.VITE_DUKCAPIL_API + '/verify-nik'; // ✅ Ambil dari .env
+
+      const resp = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
