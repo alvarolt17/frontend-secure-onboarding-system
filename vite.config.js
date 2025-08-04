@@ -1,7 +1,7 @@
 // vite.config.js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import csp from 'vite-plugin-csp-guard'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import csp from 'vite-plugin-csp-guard';
 
 export default defineConfig({
   plugins: [
@@ -47,4 +47,4 @@ export default defineConfig({
   build: { assetsInlineLimit: 0 },
   server: { host: true, port: 3000 },
   base: '/'
-})
+});
