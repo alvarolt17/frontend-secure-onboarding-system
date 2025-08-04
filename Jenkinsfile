@@ -24,8 +24,7 @@ pipeline {
         // --- Build Arguments ---
         VITE_BACKEND_BASE_URL = "https://wondrdesktop.my.id"
         VITE_VERIFICATOR_BASE_URL = "https://verificator-secure-onboarding-system-441501015598.asia-southeast1.run.app"
-        VITE_FIREBASE_API_KEY = "AIzaSyDAdFiBiQX28J_l6q-my4j6_hPQR_7eFyo" 
-        VITE_FIREBASE_AUTH_DOMAIN = "AIzaSyDAdFiBiQX28J_l6q-my4j6_hPQR_7eFyo"
+        VITE_FIREBASE_AUTH_DOMAIN = "wondr-desktop-otp.firebaseapp.com"
         VITE_FIREBASE_PROJECT_ID = "wondr-desktop-otp"
         VITE_FIREBASE_STORAGE_BUCKET = "wondr-desktop-otp.firebasestorage.app"
         VITE_FIREBASE_MESSAGING_SENDER_ID = "15939231912"
@@ -53,12 +52,14 @@ pipeline {
                 script {
                     def fullImageName = "${GCR_HOSTNAME}/${GCP_PROJECT_ID}/${IMAGE_NAME}:${IMAGE_TAG}"
                     sh """
+                        VITE_FIREBASE_API_KEY=\$(gcloud secrets versions access latest --secret=vite-firebase-api-key)
+
                         gcloud auth configure-docker ${GCR_HOSTNAME} --quiet
 
                         docker build \
                         --build-arg VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL} \
                         --build-arg VITE_VERIFICATOR_BASE_URL=${VITE_VERIFICATOR_BASE_URL} \
-                        --build-arg VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY} \
+                        --build-arg VITE_FIREBASE_API_KEY=\${VITE_FIREBASE_API_KEY} \
                         --build-arg VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN} \
                         --build-arg VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID} \
                         --build-arg VITE_FIREBASE_STORAGE_BUCKET=${VITE_FIREBASE_STORAGE_BUCKET} \
