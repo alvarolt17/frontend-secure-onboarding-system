@@ -1,4 +1,3 @@
-// src/context/RegisterContext.jsx
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
@@ -115,10 +114,12 @@ export const RegisterProvider = ({ children }) => {
 
     const occupationsRequiringWali = ['Ibu Rumah Tangga', 'Pelajar/Mahasiswa', 'Tidak Bekerja'];
     const userOccupation = formData.pekerjaan;
+    const userAccountType = formData?.tipeAkun;
 
     for (let i = 0; i < currentStepIndex; i++) {
       const requiredStep = stepsOrder[i];
 
+      // ✅ Skip wali-related steps jika tidak wajib wali
       if (
         (requiredStep === 'waliInfoDone' || requiredStep === 'waliIdentityDone') &&
         !occupationsRequiringWali.includes(userOccupation) &&
@@ -128,6 +129,15 @@ export const RegisterProvider = ({ children }) => {
           currentPath === '/tujuanPembukaanRekening' ||
           currentPath === '/summary'
         )
+      ) {
+        continue;
+      }
+
+      // ✅ Skip jenisKartuSelected jika akun adalah Taplus Muda dan sekarang di /personalData
+      if (
+        requiredStep === 'jenisKartuSelected' &&
+        userAccountType === 'BNI Taplus Muda' &&
+        currentPath === '/personalData'
       ) {
         continue;
       }
@@ -154,7 +164,6 @@ export const RegisterProvider = ({ children }) => {
   );
 };
 
-// ✅ Tambahkan PropTypes di sini
 RegisterProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

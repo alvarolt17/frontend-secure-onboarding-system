@@ -47,7 +47,8 @@ export default function PenghasilanPage() {
   return (
     <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
       <div className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
+        <img src={logo} alt="Wondr Logo" style={{ width: '130px', cursor: 'pointer' }} onClick={() => navigate('/')} 
+         />
       </div>
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
