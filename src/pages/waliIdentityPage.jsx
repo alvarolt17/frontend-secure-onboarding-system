@@ -154,7 +154,8 @@ export default function WaliIdentityPage() {
   return (
     <div className="d-flex flex-column bg-white min-vh-100">
       <header className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" width={130} />
+        <img src={logo} alt="Wondr Logo" width={130} onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }}/>
       </header>
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 bg-white rounded-4 shadow" style={{ maxWidth: 1200, width: '95vw' }}>

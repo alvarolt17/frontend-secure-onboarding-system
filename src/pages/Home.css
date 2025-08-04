@@ -1,4 +1,4 @@
-
+/* ====== Layout dasar ====== */
 .landing-page {
   min-height: 100vh;
   background-size: cover;
@@ -9,30 +9,67 @@
   position: relative;
 }
 
-/* Transparansi navbar agar background tetap terlihat */
+/* Spacer agar konten tidak tertutup navbar */
+.nav-spacer {
+  height: 75px;
+}
+
+/* Transparan default navbar (desktop) */
 .navbar {
   background-color: transparent !important;
 }
 
-/* Konten utama agar sesuai tengah */
-.content-area {
-  padding: 0 1rem;
+/* Typography dan tombol */
+.title {
+  font-weight: bold;
+  font-size: clamp(2.5rem, 8vw, 5rem);
 }
 
-/* Footer tombol */
-.footer-btns {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-/* Tombol styling */
-.btn-download, .btn-register {
+.btn-download,
+.btn-register {
   border-radius: 30px;
   padding: 0.75rem 1.5rem;
 }
 
-/* Hero typography */
-.title{
-  font-weight: bold;
-  font-size: clamp(2.5rem, 8vw, 5rem);
-} 
+/* ====== Animasi Dropdown ====== */
+@keyframes slideFadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+/* ====== Mobile-specific navbar dropdown ====== */
+@media (max-width: 768px) {
+  .mobile-navbar {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .show-navbar-bg {
+    background: linear-gradient(to bottom, rgba(255, 102, 0, 0.9), rgba(255, 140, 0, 0.85));
+    backdrop-filter: blur(8px);
+    padding: 1rem;
+    border-radius: 0 0 12px 12px;
+    animation: slideFadeDown 0.3s ease forwards;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .mobile-navbar .nav-link {
+    padding: 0.75rem 1rem;
+    color: white;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-navbar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+}

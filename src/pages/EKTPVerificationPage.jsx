@@ -19,8 +19,8 @@ function sanitizeNik(input) {
 function sanitizeNama(input) {
   return input
     .normalize('NFD')
-    .split('')                          // Ubah jadi array karakter
-    .filter(ch => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127) // Hapus karakter kontrol
+    .split('')
+    .filter(ch => ch.charCodeAt(0) >= 32 && ch.charCodeAt(0) !== 127)
     .join('')
     .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s'-]/g, '')
     .trim();
@@ -52,6 +52,9 @@ export default function EKTPVerificationPage() {
   const [namaLengkap, setNamaLengkap] = useState('');
   const [tanggalLahir, setTanggalLahir] = useState('');
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   const maxNik = 16;
   const navigate = useNavigate();
   const { updateForm } = useFormData();
@@ -74,41 +77,40 @@ export default function EKTPVerificationPage() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+
     if (!(isNikValid && isNamaValid && isTanggalValid)) {
-      alert('Semua field harus valid.');
+      setErrorMessage('Semua field harus diisi dengan benar.');
       return;
     }
 
-    const umur = hitungUmur(tanggalLahir); // ✅ Hitung umur
-
-    updateForm({ nik, namaLengkap, tanggalLahir, umur }); // ✅ Simpan umur
+    const umur = hitungUmur(tanggalLahir);
+    updateForm({ nik, namaLengkap, tanggalLahir, umur });
 
     setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
     try {
-      // ✅ Gunakan base URL dari .env
-      const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL; // Mendapatkan base URL dari .env
-      //console.log(baseURL)
-      const resp = await fetch(
-        `${baseURL}/api/dukcapil/verify-nik`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
-        }
-      );
+      const baseURL = import.meta.env.VITE_VERIFICATOR_BASE_URL;
+      const resp = await fetch(`${baseURL}/api/dukcapil/verify-nik`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ nik, namaLengkap, tanggalLahir }),
+      });
 
       const data = await resp.json();
       console.log('Dukcapil response:', data);
+
       if (resp.ok && data.valid) {
-        alert('Verifikasi berhasil!');
+        setSuccessMessage('Verifikasi berhasil! Data Anda valid.');
         completeStep('ktpVerified');
-        navigate('/tabungan');
+        setTimeout(() => navigate('/tabungan'), 1500);
       } else {
-        alert('❌ ' + (data.message || 'Verifikasi gagal.'));
+        setErrorMessage(data.message || 'Data tidak valid. Pastikan sesuai e‑KTP Anda.');
       }
     } catch (err) {
       console.error(err);
-      alert('Error koneksi atau sistem. Coba lagi.');
+      setErrorMessage('Terjadi gangguan koneksi atau data anda tidak sesuai dengan e-KTP. Silakan coba lagi nanti.');
     } finally {
       setLoading(false);
     }
@@ -117,7 +119,8 @@ export default function EKTPVerificationPage() {
   return (
     <div className="vh-100 d-flex flex-column bg-light">
       <div className="p-3 ps-4">
-        <img src={logo} alt="logo" style={{ width: '130px' }} />
+        <img src={logo} alt="logo" style={{ width: '130px', cursor: 'pointer' }}  
+        onClick={() => navigate('/')}/>
       </div>
       <div className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 bg-white rounded-4 shadow">
@@ -134,6 +137,31 @@ export default function EKTPVerificationPage() {
               <div>
                 <h2 className="fw-bold">Verifikasi e‑KTP</h2>
                 <p className="text-muted">Masukkan sesuai e‑KTP untuk verifikasi database Dukcapil</p>
+
+                {/* 🔔 Alert Section */}
+                {errorMessage && (
+                  <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>⚠️ Gagal Verifikasi:</strong> {errorMessage}
+                    <button
+                      type="button"
+                      className="btn-close"
+                      aria-label="Close"
+                      onClick={() => setErrorMessage('')}
+                    ></button>
+                  </div>
+                )}
+
+                {successMessage && (
+                  <div className="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>✅ Berhasil:</strong> {successMessage}
+                    <button
+                      type="button"
+                      className="btn-close"
+                      aria-label="Close"
+                      onClick={() => setSuccessMessage('')}
+                    ></button>
+                  </div>
+                )}
 
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="nik" className="mb-3">

@@ -95,7 +95,8 @@ export default function JenisKartuPage() {
   return (
     <div className="jenis-kartu-page">
       <header className="p-3 ps-4">
-        <img src={logo} alt="Logo" className="logo-img" />
+        <img src={logo} alt="Logo" className="logo-img" onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }} />
       </header>
 
       <div className="content-wrapper d-flex flex-column align-items-center px-4">

@@ -23,7 +23,14 @@ const TermsCondition = () => {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <img src={wondr} alt="Wondr Logo" className={styles.headerIcon} />
+          <img
+                src={wondr}
+                alt="Wondr Logo"
+                className={styles.headerIcon}
+                onClick={() => navigate('/')}
+                style={{ cursor: 'pointer' }} // opsional agar terlihat interaktif
+              />
+
         </div>
       </header>
 
