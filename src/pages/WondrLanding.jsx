@@ -11,12 +11,7 @@ export default function WondrLanding() {
     <div className="wondr-landing d-flex flex-column min-vh-100">
       {/* Header */}
       <header className="wondr-header p-3 px-4 d-flex align-items-center">
-        <img
-  src={logo}
-  alt="Wondr Logo"
-  style={{ width: '130px', cursor: 'pointer' }}
-  onClick={() => navigate('/')}
-/>
+        <img src={logo} alt="Wondr Logo" className="wondr-logo" />
       </header>
 
       {/* Main Content */}
