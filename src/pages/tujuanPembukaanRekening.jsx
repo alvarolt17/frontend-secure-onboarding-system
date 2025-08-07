@@ -122,7 +122,12 @@ export default function TujuanPembukaanRekening() {
   return (
     <div className="vh-100 d-flex flex-column bg-white">
       <div className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
+        <img
+  src={logo}
+  alt="Wondr Logo"
+  style={{ width: '130px', cursor: 'pointer' }}
+  onClick={() => navigate('/')}
+/>
       </div>
 
       <div className="flex-grow-1 d-flex align-items-center justify-content-center p-3">

@@ -99,7 +99,12 @@ export default function PhoneOtpInputPage() {
   return (
     <div className="vh-100 d-flex flex-column bg-light font-poppins">
       <header className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" width={130} loading="eager" />
+        <img
+  src={logo}
+  alt="Wondr Logo"
+  style={{ width: '130px', cursor: 'pointer' }}
+  onClick={() => navigate('/')}
+/>
       </header>
 
       <main className="flex-grow-1 d-flex align-items-center justify-content-center">

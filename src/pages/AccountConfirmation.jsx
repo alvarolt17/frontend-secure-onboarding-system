@@ -83,7 +83,12 @@ export default function AccountConfirmation() {
   return (
     <div className="d-flex flex-column bg-light font-poppins">
       <header className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" width={130} />
+        <img
+  src={logo}
+  alt="Wondr Logo"
+  style={{ width: '130px', cursor: 'pointer' }}
+  onClick={() => navigate('/')}
+/>
       </header>
 
       <main className="flex-grow-1 d-flex align-items-center justify-content-center">

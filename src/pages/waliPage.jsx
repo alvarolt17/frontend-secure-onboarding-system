@@ -49,7 +49,12 @@ export default function WaliPage() {
   return (
     <div className="d-flex flex-column bg-white" style={{ minHeight: '100vh' }}>
       <header className="p-3 ps-4">
-        <img src={logo} alt="Wondr Logo" style={{ width: '130px' }} />
+        <img
+  src={logo}
+  alt="Wondr Logo"
+  style={{ width: '130px', cursor: 'pointer' }}
+  onClick={() => navigate('/')}
+/>
       </header>
       <main className="flex-grow-1 d-flex align-items-center justify-content-center">
         <Container className="p-4 bg-white rounded-4 shadow" style={{ maxWidth: '1200px', width: '95vw' }}>
